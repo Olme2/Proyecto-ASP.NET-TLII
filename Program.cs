@@ -1,4 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IUsuariosRepository, UsuariosRepository>();
+builder.Services.AddScoped<ITableroRepository, TableroRepository>();
+builder.Services.AddScoped<ITareasRepository, TareasRepository>();
 
 var CadenaDeConexion = builder.Configuration.GetConnectionString("SqliteConexion")!.ToString();
 builder.Services.AddSingleton(CadenaDeConexion);
@@ -21,16 +24,11 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
-
 app.UseAuthorization();
-
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Index}/{id?}")
     .WithStaticAssets();
-
-
 app.Run();
