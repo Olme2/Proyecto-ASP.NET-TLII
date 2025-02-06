@@ -5,11 +5,10 @@ public class TableroRepository : ITableroRepository{
         ConnectionString = connectionString;
     }
     public void CrearTablero(Tablero tablero){
-        string QueryString = @"INSERT INTO Tablero VALUES(@id, @idPropietario, @nombre, @descripcion);";
+        string QueryString = @"INSERT INTO Tablero VALUES(@idPropietario, @nombre, @descripcion);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
-            command.Parameters.AddWithValue("@id", tablero.id);
             command.Parameters.AddWithValue("@idPropietario", tablero.idUsuarioPropietario);
             command.Parameters.AddWithValue("@nombre", tablero.nombre);
             command.Parameters.AddWithValue("@descripcion", tablero.descripcion);

@@ -7,6 +7,20 @@ public class Tablero{
         Nombre = string.Empty;
         Descripcion = string.Empty;
     }
+    public Tablero(CrearTableroVM tableroVM){
+        Nombre = tableroVM.nombre;
+        Descripcion = tableroVM.descripcion;
+    }
+    public Tablero(ListarTablerosVM tableroVM){
+        Id= tableroVM.id;
+        Nombre = tableroVM.nombre;
+        Descripcion = tableroVM.descripcion;
+    }
+    public Tablero(ModificarTableroVM tableroVM){
+        IdUsuarioPropietario = tableroVM.idUsuarioPropietario;
+        Nombre = tableroVM.nombre;
+        Descripcion = tableroVM.descripcion;
+    }
     public int id {get => Id; set => Id = value;}
     public int idUsuarioPropietario {get => IdUsuarioPropietario; set => IdUsuarioPropietario = value;}
     public string nombre {get => Nombre; set => Nombre = value;}

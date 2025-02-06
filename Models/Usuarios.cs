@@ -13,6 +13,16 @@ public class Usuarios{
         Password = password;
         RolUsuario = rolUsuario;
     }
+    public Usuarios(CrearUsuarioVM usuarioVM){
+        NombreDeUsuario = usuarioVM.nombreDeUsuario;
+        Password = usuarioVM.password;
+        RolUsuario = usuarioVM.rolUsuario;
+    }
+    public Usuarios(ModificarUsuarioVM usuarioVM){
+        NombreDeUsuario = usuarioVM.nombreDeUsuario;
+        Password = usuarioVM.password;
+        RolUsuario = usuarioVM.rolUsuario;
+    }
     public int id {get => Id; set => Id = value;}
     public string nombreDeUsuario {get => NombreDeUsuario; set => NombreDeUsuario = value;}
     public string password {get => Password; set => Password = value;}

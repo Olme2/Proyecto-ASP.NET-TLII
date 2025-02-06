@@ -5,11 +5,10 @@ public class UsuariosRepository : IUsuariosRepository{
         ConnectionString = CadenaDeConexion;
     }
     public void CrearUsuario(Usuarios usuario){
-        string QueryString = @"INSERT INTO Usuario VALUES (@id, @nombre, @password, @rol);";
+        string QueryString = @"INSERT INTO Usuario VALUES (@nombre, @password, @rol);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
-            command.Parameters.AddWithValue("@id", usuario.id);
             command.Parameters.AddWithValue("@nombre", usuario.nombreDeUsuario);
             command.Parameters.AddWithValue("@password", usuario.password);
             command.Parameters.AddWithValue("@rol", usuario.rolUsuario);

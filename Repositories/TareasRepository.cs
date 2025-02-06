@@ -5,12 +5,11 @@ public class TareasRepository : ITareasRepository{
         ConnectionString = cadenaDeConexion;
     }
     public void CrearTarea(int idTablero, Tareas tarea){
-        string QueryString = @"INSERT INTO Tarea VALUES(@id, @idTablero, @nombre, @estado, @descripcion, @color, @idUsuario);";
+        string QueryString = @"INSERT INTO Tarea VALUES(@idTablero, @nombre, @estado, @descripcion, @color, @idUsuario);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
-            command.Parameters.AddWithValue("@id", tarea.id);
-            command.Parameters.AddWithValue("@idTablero", tarea.idTablero);
+            command.Parameters.AddWithValue("@idTablero", idTablero);
             command.Parameters.AddWithValue("@nombre", tarea.nombre);
             command.Parameters.AddWithValue("@estado", tarea.estado);
             command.Parameters.AddWithValue("@descripcion", tarea.descripcion);

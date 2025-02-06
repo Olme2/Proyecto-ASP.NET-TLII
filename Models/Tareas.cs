@@ -19,14 +19,18 @@ public class Tareas{
         Color = color; 
         Estado = estado;
     }
-    public Tareas(int id, int idTablero, string nombre, string descripcion, string color, EstadoTarea estado, int idUsuarioAsignado){
-        Id = id;
-        IdTablero = idTablero;
-        Nombre = nombre;
-        Descripcion = descripcion;
-        Color = color; 
-        Estado = estado;
-        IdUsuarioAsignado = idUsuarioAsignado;
+    public Tareas(CrearTareaVM tareaVM){
+        Nombre = tareaVM.nombre;
+        Descripcion = tareaVM.descripcion;
+        Color = tareaVM.color; 
+        Estado = tareaVM.estado;
+    }
+    public Tareas(ListarTareasVM tareaVM){
+        Id = tareaVM.id;
+        Nombre = tareaVM.nombre;
+        Descripcion = tareaVM.descripcion;
+        Color = tareaVM.color;
+        Estado = tareaVM.estado;
     }
     public int id {get => Id; set => Id = value;}
     public int idTablero {get => IdTablero; set => IdTablero = value;}
