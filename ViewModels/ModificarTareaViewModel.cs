@@ -11,6 +11,13 @@ public class ModificarTareaVM{
         Descripcion = string.Empty;
         Color = string.Empty;
     }
+    public ModificarTareaVM(Tareas tarea){
+        IdTablero = tarea.idTablero;
+        Nombre = tarea.nombre;
+        Descripcion = tarea.descripcion;
+        Color = tarea.color;
+        Estado = tarea.estado;
+    }
     public int idTablero {get => IdTablero; set => IdTablero = value;}
     public string nombre {get => Nombre; set => Nombre = value;}
     public string descripcion {get => Descripcion; set => Descripcion = value;}

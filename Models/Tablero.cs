@@ -7,6 +7,12 @@ public class Tablero{
         Nombre = string.Empty;
         Descripcion = string.Empty;
     }
+    public Tablero(int id, int idUsuarioPropietario, string nombre, string descripcion){
+        Id = id;
+        IdUsuarioPropietario = idUsuarioPropietario;
+        Nombre = nombre;
+        Descripcion = descripcion;
+    }
     public Tablero(CrearTableroVM tableroVM){
         Nombre = tableroVM.nombre;
         Descripcion = tableroVM.descripcion;

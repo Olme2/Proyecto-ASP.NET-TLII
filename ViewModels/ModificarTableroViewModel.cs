@@ -7,6 +7,11 @@ public class ModificarTableroVM{
         Nombre = string.Empty;
         Descripcion = string.Empty; 
     }
+    public ModificarTableroVM(Tablero tablero){
+        IdUsuarioPropietario = tablero.idUsuarioPropietario;
+        Nombre = tablero.nombre;
+        Descripcion = tablero.descripcion;
+    }
     public int idUsuarioPropietario {get => IdUsuarioPropietario; set => IdUsuarioPropietario = value;}
     public string nombre {get => Nombre; set => Nombre = value;}
     public string descripcion {get => Descripcion; set => Descripcion = value;}
