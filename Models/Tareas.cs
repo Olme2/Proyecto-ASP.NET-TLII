@@ -32,6 +32,14 @@ public class Tareas{
         Color = tareaVM.color;
         Estado = tareaVM.estado;
     }
+    public Tareas(ModificarTareaVM tareaVM){
+        IdTablero = tareaVM.idTablero;
+        Nombre = tareaVM.nombre;
+        Descripcion = tareaVM.descripcion;
+        Color = tareaVM.color;
+        Estado = tareaVM.estado;
+        IdUsuarioAsignado= tareaVM.idUsuarioAsignado;
+    }
     public int id {get => Id; set => Id = value;}
     public int idTablero {get => IdTablero; set => IdTablero = value;}
     public string nombre {get => Nombre; set => Nombre = value;}

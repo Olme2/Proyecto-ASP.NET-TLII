@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations; 
 public class LoginVM{
+    private int Id;
     private string NombreDeUsuario;
     private string Password;
     private string Error;
@@ -9,6 +10,7 @@ public class LoginVM{
         Password = string.Empty;
         Error = string.Empty;
     }
+    public int id {get => Id; set => Id = value;}
     public string nombreDeUsuario {get => NombreDeUsuario; set => NombreDeUsuario = value;}
     public string password {get => Password; set => Password = value;}
     public string error {get => Error; set => Error = value;}

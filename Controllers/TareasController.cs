@@ -14,7 +14,8 @@ public class TareasController : Controller{
         return View();
     }
     [HttpPost]
-    public IActionResult CrearTarea(int idTablero, Tareas tarea){
+    public IActionResult CrearTarea(int idTablero, CrearTareaVM tareaVM){
+        var tarea = new Tareas(tareaVM);
         repositorioTareas.CrearTarea(idTablero, tarea);
         return RedirectToAction("Index");
     }
@@ -23,7 +24,8 @@ public class TareasController : Controller{
         return View(repositorioTareas.ObtenerDetallesDeTarea(idTarea));
     }
     [HttpPost]
-    public IActionResult Modificar(Tareas tarea){
+    public IActionResult Modificar(ModificarTareaVM tareaVM){
+        var tarea = new Tareas(tareaVM);
         repositorioTareas.ModificarTarea(tarea.id,tarea);
         return RedirectToAction("Index");
     }

@@ -14,7 +14,8 @@ public class TableroController : Controller{
         return View();
     }
     [HttpPost]
-    public IActionResult CrearTablero(Tablero tablero){
+    public IActionResult CrearTablero(CrearTableroVM tableroVM){
+        var tablero = new Tablero(tableroVM);
         repositorioTablero.CrearTablero(tablero);
         return RedirectToAction("Index");
     }
@@ -23,7 +24,8 @@ public class TableroController : Controller{
         return View(repositorioTablero.ObtenerDetallesDeTablero(id));
     }
     [HttpPost]
-    public IActionResult Modificar(Tablero tablero){
+    public IActionResult Modificar(ModificarTableroVM tableroVM){
+        var tablero = new Tablero(tableroVM);
         repositorioTablero.ModificarTablero(tablero.id, tablero);
         return RedirectToAction("Index");
     }

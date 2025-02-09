@@ -14,16 +14,18 @@ public class UsuariosController : Controller{
         return View();
     }
     [HttpPost]
-    public IActionResult CrearUsuario(Usuarios usuario){
-       repositorioUsuarios.CrearUsuario(usuario);
-       return RedirectToAction("Index"); 
+    public IActionResult CrearUsuario(CrearUsuarioVM usuarioVM){
+        var usuario = new Usuarios(usuarioVM);
+        repositorioUsuarios.CrearUsuario(usuario);
+        return RedirectToAction("Index"); 
     }
     [HttpGet]
     public IActionResult ModificarUsuario(int id){
         return View(repositorioUsuarios.ObtenerDetallesDeUsuario(id));
     }
     [HttpPost]
-    public IActionResult Modificar(Usuarios usuario){
+    public IActionResult Modificar(ModificarUsuarioVM usuarioVM){
+        var usuario = new Usuarios(usuarioVM);
         repositorioUsuarios.ModificarUsuario(usuario.id, usuario);
         return RedirectToAction("Index");
     }
