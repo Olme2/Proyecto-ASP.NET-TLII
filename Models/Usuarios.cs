@@ -1,3 +1,4 @@
+namespace proyecto_2024_Olme2.Models;
 public class Usuarios{
     private int Id;
     private string NombreDeUsuario; 

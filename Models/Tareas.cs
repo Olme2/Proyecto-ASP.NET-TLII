@@ -1,3 +1,4 @@
+namespace proyecto_2024_Olme2.Models;
 public class Tareas{
     private int Id;
     private int IdTablero;

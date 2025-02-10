@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using tl2_proyecto_2024_Olme2.Models;
 public class UsuariosController : Controller{
     private readonly ILogger<UsuariosController> _logger;
     private IUsuariosRepository repositorioUsuarios;
