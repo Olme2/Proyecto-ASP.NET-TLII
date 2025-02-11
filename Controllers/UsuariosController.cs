@@ -8,7 +8,9 @@ public class UsuariosController : Controller{
         repositorioUsuarios = RepositorioUsuarios;
     }
     public IActionResult Index(){
-        return View(repositorioUsuarios.ListarUsuarios());
+        var usuarios = repositorioUsuarios.ListarUsuarios();
+        var usuariosVM = usuarios.Select(u => new ListarUsuariosVM(u)).ToList;
+        return View(usuariosVM);
     }
     [HttpGet]
     public IActionResult AltaUsuario(){
@@ -22,7 +24,9 @@ public class UsuariosController : Controller{
     }
     [HttpGet]
     public IActionResult ModificarUsuario(int id){
-        return View(repositorioUsuarios.ObtenerDetallesDeUsuario(id));
+        var usuario = repositorioUsuarios.ObtenerDetallesDeUsuario(id);
+        var usuarioVM = new ModificarUsuarioVM(usuario);
+        return View(usuarioVM);
     }
     [HttpPost]
     public IActionResult Modificar(ModificarUsuarioVM usuarioVM){

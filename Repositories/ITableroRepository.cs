@@ -1,3 +1,4 @@
+using tl2_proyecto_2024_Olme2.Models;
 public interface ITableroRepository{
     void CrearTablero(Tablero tablero);
     void ModificarTablero(int id, Tablero tablero);

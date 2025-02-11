@@ -1,4 +1,4 @@
-namespace proyecto_2024_Olme2.Models;
+namespace tl2_proyecto_2024_Olme2.Models;
 public class Tablero{
     private int Id;
     private int IdUsuarioPropietario;

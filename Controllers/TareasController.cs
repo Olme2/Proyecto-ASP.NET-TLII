@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using tl2_proyecto_2024_Olme2.Models;
 public class TareasController : Controller{
     private readonly ILogger<TareasController> _logger;
     private ITareasRepository repositorioTareas;
@@ -6,8 +7,11 @@ public class TareasController : Controller{
         _logger = logger;
         repositorioTareas = RepositorioTareas;
     }
-    public IActionResult Index(int idUsuario){
-        return View(repositorioTareas.ListarTareasDeUsuario(idUsuario));
+    public IActionResult Index(){
+        var id = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
+        var tareas = repositorioTareas.ListarTareasDeUsuario(id);
+        var tareasVM = tareas.Select(t => new ListarTareasVM(t)).ToList;
+        return View(tareasVM);
     }
     [HttpGet]
     public IActionResult AltaTarea(){

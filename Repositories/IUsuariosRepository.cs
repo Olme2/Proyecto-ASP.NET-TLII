@@ -1,3 +1,4 @@
+using tl2_proyecto_2024_Olme2.Models;
 public interface IUsuariosRepository{
     void CrearUsuario(Usuarios usuario);
     void ModificarUsuario(int id, Usuarios usuario);

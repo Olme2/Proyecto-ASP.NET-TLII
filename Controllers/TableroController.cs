@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using tl2_proyecto_2024_Olme2.Models;
 public class TableroController : Controller{
     private readonly ILogger<TableroController> _logger;
     private ITableroRepository repositorioTablero;

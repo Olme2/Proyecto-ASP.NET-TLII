@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations; 
+namespace tl2_proyecto_2024_Olme2.Models;
 public class ListarTareasVM{
     private int Id;
     private string Nombre;
@@ -9,6 +10,13 @@ public class ListarTareasVM{
         Nombre = string.Empty;
         Descripcion = string.Empty;
         Color = string.Empty;
+    }
+    public ListarTareasVM(Tareas tarea){
+        Id = tarea.id;
+        Nombre = tarea.nombre;
+        Descripcion = tarea.descripcion;
+        Color = tarea.color;
+        Estado = tarea.estado;
     }
     public int id {get => Id; set => Id = value;}
     public string nombre {get => Nombre; set => Nombre = value;}

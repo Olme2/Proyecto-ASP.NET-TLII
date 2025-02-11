@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using tl2_proyecto_2024_Olme2.Models;
 public class TareasRepository : ITareasRepository{
     private readonly string ConnectionString;
     public TareasRepository(string cadenaDeConexion){

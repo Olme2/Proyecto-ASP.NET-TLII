@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations; 
+namespace tl2_proyecto_2024_Olme2.Models;
 public class CrearTableroVM{
     private string Nombre;
     private string Descripcion;

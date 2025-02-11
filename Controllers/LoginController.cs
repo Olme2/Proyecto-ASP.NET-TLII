@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using tl2_proyecto_2024_Olme2.Models;
 public class LoginController : Controller{
     private readonly ILogger<LoginController> _logger;
     private readonly IUsuariosRepository _repositorioUsuarios;
@@ -17,6 +17,7 @@ public class LoginController : Controller{
         Usuarios usuario = _repositorioUsuarios.ObtenerDetallesDeUsuario(model.id);
         if(usuario != null){
             HttpContext.Session.SetString("Autenticado", "true");
+            HttpContext.Session.SetInt32("Id", usuario.id);
             HttpContext.Session.SetString("Usuario", usuario.nombreDeUsuario);
             HttpContext.Session.SetString("Rol", usuario.rolUsuario.ToString());
             return RedirectToAction("Index", "Tableros");

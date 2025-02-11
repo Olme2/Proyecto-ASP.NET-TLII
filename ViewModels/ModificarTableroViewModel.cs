@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations; 
+namespace tl2_proyecto_2024_Olme2.Models;
 public class ModificarTableroVM{
     private int IdUsuarioPropietario;
     private string Nombre;
