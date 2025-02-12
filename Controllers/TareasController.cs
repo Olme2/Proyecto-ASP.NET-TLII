@@ -14,13 +14,14 @@ public class TareasController : Controller{
         return View(tareasVM);
     }
     [HttpGet]
-    public IActionResult AltaTarea(){
-        return View();
+    public IActionResult AltaTarea(int IdTablero){
+        var tarea = new CrearTareaVM(){idTablero = IdTablero};
+        return View(tarea);
     }
     [HttpPost]
-    public IActionResult CrearTarea(int idTablero, CrearTareaVM tareaVM){
+    public IActionResult CrearTarea(CrearTareaVM tareaVM){
         var tarea = new Tareas(tareaVM);
-        repositorioTareas.CrearTarea(idTablero, tarea);
+        repositorioTareas.CrearTarea(tareaVM.idTablero, tarea);
         return RedirectToAction("Index");
     }
     [HttpGet]

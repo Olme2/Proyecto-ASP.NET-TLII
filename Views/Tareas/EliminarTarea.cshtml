@@ -1,0 +1,12 @@
+@model int
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2 class="text-center">Eliminacion de la tarea n°@Model</h2>
+    </div>
+    <h3 class="text-center">¿Desea eliminar la tarea?</h3>
+    <div class="text-center">
+        <a asp-controller="Tareas" asp-action="Eliminar" asp-route-id="@Model" class="btn btn-danger">Eliminar</a>
+        <a asp-controller="Tareas" asp-action="Index" class="btn btn-primary">Cancelar</a>
+    </div>
+</div>

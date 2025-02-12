@@ -1,0 +1,12 @@
+@model int
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2 class="text-center">Eliminacion del tablero n°@Model</h2>
+    </div>
+    <h3 class="text-center">¿Desea eliminar el tablero?</h3>
+    <div class="text-center">
+        <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@Model" class="btn btn-danger">Eliminar</a>
+        <a asp-controller="Tablero" asp-action="Index" class="btn btn-primary">Cancelar</a>
+    </div>
+</div>
