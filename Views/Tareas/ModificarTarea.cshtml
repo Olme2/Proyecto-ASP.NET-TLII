@@ -1,22 +1,35 @@
-@model ModificarUsuarioVM
+@model ModificarTareaVM
 
-<h3 class="text-center">Modificar Usuario n° @Model.id</h3>
+<h3 class="text-center">Modificar Tarea n° @Model.id</h3>
 <form asp-controller="Usuarios" asp-action="Modificar" class="form">
     <input type="hidden" asp-for="id" value="@Model.id">
     <div class="form-group">
-        <label asp-for="nombreDeUsuario">Nombre</label>
-        <input asp-for="nombreDeUsuario" value="@Model.nombreDeUsuario" class="form-control" required>
+        <label asp-for="nombre">Nombre</label>
+        <input asp-for="nombre" value="@Model.nombre" class="form-control" required>
     </div>
     <div class="form-group">
-        <label asp-for="password">Contraseña</label>
-        <input asp-for="password" value="@Model.password" class="form-control" required>
+        <label asp-for="descripcion">Descripción</label>
+        <input asp-for="descripcion" value="@Model.descripcion" class="form-control" required>
     </div>
     <div class="form-group">
-        <label asp-for="rolUsuario" class="form-label">Rol</label>
-        <select asp-for="rolUsuario" class="form-select" value="@Model.rolUsuario">
-            @foreach (var nivel in Enum.GetValues(typeof(Usuarios.Rol)))
+        <label asp-for="color" class="form-label">Color</label>
+        <input asp-for="color" value="@Model.color" type="color" class="form-control">
+    </div>
+    <div class="form-group">
+        <label asp-for="estado" class="form-label">Estado</label>
+        <select asp-for="estado" value="@Model.estado" class="form-select">
+            @foreach (var estado in Enum.GetValues(typeof(Tareas.EstadoTarea)))
             {
-                <option value="@nivel">@nivel</option>
+                <option value="@estado">@estado</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="idUsuarioAsignado" class="form-label">Usuario Asignado</label>
+        <select asp-for="estado" value="@Model.idUsuarioAsignado" class="form-select">
+            @foreach (var id in Enum.GetValues(typeof(Tareas.EstadoTarea)))
+            {
+                <option value="@estado">@estado</option>
             }
         </select>
     </div>

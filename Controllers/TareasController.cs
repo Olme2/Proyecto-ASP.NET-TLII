@@ -26,7 +26,9 @@ public class TareasController : Controller{
     }
     [HttpGet]
     public IActionResult ModificarTarea(int idTarea){
-        return View(repositorioTareas.ObtenerDetallesDeTarea(idTarea));
+        var tarea = repositorioTareas.ObtenerDetallesDeTarea(idTarea);
+        var tareaVM = new ModificarTareaVM(tarea);
+        return View(tareaVM);
     }
     [HttpPost]
     public IActionResult Modificar(ModificarTareaVM tareaVM){
