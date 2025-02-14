@@ -8,7 +8,9 @@ public class TableroController : Controller{
         repositorioTablero = ReposiotrioTablero;
     }
     public IActionResult Index(){
-        return View(repositorioTablero.ListarTableros());
+        var tableros = repositorioTablero.ListarTableros();
+        var tablerosVM = tableros.Select(t => new ListarTablerosVM(t));
+        return View(tablerosVM);
     }
     [HttpGet]
     public IActionResult AltaTablero(){
@@ -22,7 +24,9 @@ public class TableroController : Controller{
     }
     [HttpGet]
     public IActionResult ModificarTablero(int id){
-        return View(repositorioTablero.ObtenerDetallesDeTablero(id));
+        var tablero = repositorioTablero.ObtenerDetallesDeTablero(id);
+        var tableroVM = new ModificarTableroVM(tablero);
+        return View(tableroVM);
     }
     [HttpPost]
     public IActionResult Modificar(ModificarTableroVM tableroVM){

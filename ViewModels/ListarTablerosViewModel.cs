@@ -8,6 +8,11 @@ public class ListarTablerosVM{
         Nombre = string.Empty;
         Descripcion = string.Empty;
     }
+    public ListarTablerosVM(Tablero tablero){
+        Id = tablero.id;
+        Nombre = tablero.nombre;
+        Descripcion = tablero.descripcion;
+    }
     public string nombre {get => Nombre; set => Nombre = value;}
     public string descripcion {get => Descripcion; set => Descripcion = value;}
     public int id {get => Id; set => Id = value;}
