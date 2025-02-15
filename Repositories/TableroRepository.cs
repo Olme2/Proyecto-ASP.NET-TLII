@@ -6,7 +6,7 @@ public class TableroRepository : ITableroRepository{
         ConnectionString = connectionString;
     }
     public void CrearTablero(Tablero tablero){
-        string QueryString = @"INSERT INTO Tablero VALUES(@idPropietario, @nombre, @descripcion);";
+        string QueryString = @"INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion) VALUES(@idPropietario, @nombre, @descripcion);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);

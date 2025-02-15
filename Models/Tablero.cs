@@ -15,6 +15,7 @@ public class Tablero{
         Descripcion = descripcion;
     }
     public Tablero(CrearTableroVM tableroVM){
+        IdUsuarioPropietario = tableroVM.idUsuarioPropietario;
         Nombre = tableroVM.nombre;
         Descripcion = tableroVM.descripcion;
     }

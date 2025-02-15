@@ -21,6 +21,7 @@ public class Tareas{
         Estado = estado;
     }
     public Tareas(CrearTareaVM tareaVM){
+        IdTablero = tareaVM.idTablero;
         Nombre = tareaVM.nombre;
         Descripcion = tareaVM.descripcion;
         Color = tareaVM.color; 
@@ -49,10 +50,10 @@ public class Tareas{
     public EstadoTarea estado {get => Estado; set => Estado = value;}
     public int? idUsuarioAsignado {get => IdUsuarioAsignado; set => IdUsuarioAsignado = value;}
     public enum EstadoTarea{
-        Ideas,
-        ToDo,
-        Doing,
-        Review,
-        Done
+        Ideas = 1,
+        ToDo = 2,
+        Doing = 3,
+        Review = 4,
+        Done = 5
     }
 }

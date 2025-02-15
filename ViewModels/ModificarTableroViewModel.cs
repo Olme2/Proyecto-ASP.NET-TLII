@@ -10,6 +10,7 @@ public class ModificarTableroVM{
         Descripcion = string.Empty; 
     }
     public ModificarTableroVM(Tablero tablero){
+        Id = tablero.id;
         IdUsuarioPropietario = tablero.idUsuarioPropietario;
         Nombre = tablero.nombre;
         Descripcion = tablero.descripcion;

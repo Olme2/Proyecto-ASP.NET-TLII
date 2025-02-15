@@ -6,7 +6,7 @@ public class UsuariosRepository : IUsuariosRepository{
         ConnectionString = CadenaDeConexion;
     }
     public void CrearUsuario(Usuarios usuario){
-        string QueryString = @"INSERT INTO Usuario VALUES (@nombre, @password, @rol);";
+        string QueryString = @"INSERT INTO Usuario (nombre_de_usuario, password, rolusuario) VALUES (@nombre, @password, @rol);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
@@ -22,7 +22,7 @@ public class UsuariosRepository : IUsuariosRepository{
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
-            command.Parameters.AddWithValue("@id", usuario.id);
+            command.Parameters.AddWithValue("@id", id);
             command.Parameters.AddWithValue("@nombre", usuario.nombreDeUsuario);
             command.Parameters.AddWithValue("@password", usuario.password);
             command.Parameters.AddWithValue("@rol", usuario.rolUsuario);
@@ -39,6 +39,7 @@ public class UsuariosRepository : IUsuariosRepository{
             command.Parameters.AddWithValue("@id", id);
             using(SqliteDataReader reader = command.ExecuteReader()){
                 if(reader.Read()){
+                    usuario.id = id;
                     var nombreDeUsuario = reader["nombre_de_usuario"].ToString();
                     var password = reader["password"].ToString();
                     if(nombreDeUsuario!=null){
@@ -47,6 +48,26 @@ public class UsuariosRepository : IUsuariosRepository{
                     if(password!=null){
                         usuario.password = password;
                     }
+                    usuario.rolUsuario = (Usuarios.Rol)Convert.ToInt32(reader["rolusuario"]);
+                }
+            }
+            connection.Close();
+        }
+        return usuario;
+    }
+    public Usuarios ObtenerUsuarioPorNombreYPassword(string nombreDeUsuario, string password){
+        Usuarios usuario = new Usuarios();
+        string QueryString = @"SELECT * FROM Usuario WHERE nombre_de_usuario = @nombreDeUsuario AND password = @password;";
+        using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
+            connection.Open();
+            SqliteCommand command = new SqliteCommand(QueryString, connection);
+            command.Parameters.AddWithValue("@nombreDeUsuario", nombreDeUsuario);
+            command.Parameters.AddWithValue("@password", password);
+            using(SqliteDataReader reader = command.ExecuteReader()){
+                if(reader.Read()){
+                    usuario.id = Convert.ToInt32(reader["id"]);
+                    usuario.nombreDeUsuario = nombreDeUsuario;
+                    usuario.password = password;
                     usuario.rolUsuario = (Usuarios.Rol)Convert.ToInt32(reader["rolusuario"]);
                 }
             }

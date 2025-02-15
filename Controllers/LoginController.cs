@@ -14,13 +14,13 @@ public class LoginController : Controller{
         return View(model);
     }
     public IActionResult Login(LoginVM model){
-        Usuarios usuario = _repositorioUsuarios.ObtenerDetallesDeUsuario(model.id);
+        Usuarios usuario = _repositorioUsuarios.ObtenerUsuarioPorNombreYPassword(model.nombreDeUsuario, model.password);
         if(usuario != null){
             HttpContext.Session.SetString("Autenticado", "true");
             HttpContext.Session.SetInt32("Id", usuario.id);
             HttpContext.Session.SetString("Usuario", usuario.nombreDeUsuario);
             HttpContext.Session.SetString("Rol", usuario.rolUsuario.ToString());
-            return RedirectToAction("Index", "Tableros");
+            return RedirectToAction("Index", "Tablero");
         }
         model.error = "Usuario o contraseña incorrectos";
         model.autenticado = false;

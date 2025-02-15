@@ -1,6 +1,7 @@
 @model CrearTableroVM
 
 <form asp-action="CrearTablero" method="post" class="form">
+    <input type="hidden" asp-for="idUsuarioPropietario" value="@Convert.ToInt32(ViewData["IdUsuario"])">
     <div class="form-group">
         <label asp-for="nombre" class="form-label">Nombre</label>
         <input asp-for="nombre" class="form-control" />

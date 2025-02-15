@@ -6,7 +6,7 @@ public class TareasRepository : ITareasRepository{
         ConnectionString = cadenaDeConexion;
     }
     public void CrearTarea(int idTablero, Tareas tarea){
-        string QueryString = @"INSERT INTO Tarea VALUES(@idTablero, @nombre, @estado, @descripcion, @color, @idUsuario);";
+        string QueryString = @"INSERT INTO Tarea (id_tablero, nombre, estado, descripcion, color) VALUES(@idTablero, @nombre, @estado, @descripcion, @color);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
@@ -15,7 +15,6 @@ public class TareasRepository : ITareasRepository{
             command.Parameters.AddWithValue("@estado", tarea.estado);
             command.Parameters.AddWithValue("@descripcion", tarea.descripcion);
             command.Parameters.AddWithValue("@color", tarea.color);
-            command.Parameters.AddWithValue("@idUsuario", tarea.idUsuarioAsignado);
             command.ExecuteNonQuery();
             connection.Close();
         }

@@ -4,20 +4,20 @@
 <form asp-controller="Tablero" asp-action="Modificar" class="form">
     <input type="hidden" asp-for="id" value="@Model.id">
     <div class="form-group">
-        <label asp-for="nombre">Nombre</label>
-        <input asp-for="nombre" value="@Model.nombre" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label asp-for="rolUsuario" class="form-label">Usuario Propietario</label>
-        <select asp-for="rolUsuario" class="form-select" value="@Model.rolUsuario">
-            @foreach (var nivel in Enum.GetValues(typeof(Usuarios.Rol)))
+        <label asp-for="idUsuarioPropietario" class="form-label">Usuario Propietario</label>
+        <select asp-for="idUsuarioPropietario" class="form-select" value="@Model.idUsuarioPropietario">
+            @foreach (var usuario in (IEnumerable<SelectListItem>)ViewData["Usuarios"])
             {
-                <option value="@nivel">@nivel</option>
+                <option value="@usuario.Value">@usuario.Text</option>
             }
         </select>
     </div>
     <div class="form-group">
-        <label asp-for="descripcion">Contraseña</label>
+        <label asp-for="nombre">Nombre</label>
+        <input asp-for="nombre" value="@Model.nombre" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label asp-for="descripcion">Descripción</label>
         <input asp-for="descripcion" value="@Model.descripcion" class="form-control" required>
     </div>
     <div class=" mt-3">

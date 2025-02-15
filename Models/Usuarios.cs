@@ -20,6 +20,7 @@ public class Usuarios{
         RolUsuario = usuarioVM.rolUsuario;
     }
     public Usuarios(ModificarUsuarioVM usuarioVM){
+        Id = usuarioVM.id;
         NombreDeUsuario = usuarioVM.nombreDeUsuario;
         Password = usuarioVM.password;
         RolUsuario = usuarioVM.rolUsuario;
@@ -29,7 +30,7 @@ public class Usuarios{
     public string password {get => Password; set => Password = value;}
     public Rol rolUsuario {get => RolUsuario; set => RolUsuario = value;}
     public enum Rol{
-        Administrador,
-        Operador
+        Administrador = 1,
+        Operador = 2
     }
 }

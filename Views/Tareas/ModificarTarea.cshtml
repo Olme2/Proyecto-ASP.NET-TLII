@@ -26,10 +26,10 @@
     </div>
     <div class="form-group">
         <label asp-for="idUsuarioAsignado" class="form-label">Usuario Asignado</label>
-        <select asp-for="estado" value="@Model.idUsuarioAsignado" class="form-select">
-            @foreach (var id in Enum.GetValues(typeof(Tareas.EstadoTarea)))
+        <select asp-for="idUsuarioAsignado" value="@Model.idUsuarioAsignado" class="form-select">
+            @foreach (var usuario in (IEnumerable<SelectListItem>)ViewData["Usuarios"])
             {
-                <option value="@estado">@estado</option>
+                <option value="@usuario.Value">@usuario.Text</option>
             }
         </select>
     </div>
