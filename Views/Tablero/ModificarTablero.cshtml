@@ -1,7 +1,7 @@
 @model ModificarTableroVM
 
-<h3 class="text-center">Modificar Tablero n° @Model.id</h3>
-<form asp-controller="Tablero" asp-action="Modificar" class="form">
+<h3 class="text-center">Modificar Tablero @Model.nombre</h3>
+<form asp-action="Modificar" method="post" class="form">
     <input type="hidden" asp-for="id" value="@Model.id">
     <div class="form-group">
         <label asp-for="idUsuarioPropietario" class="form-label">Usuario Propietario</label>

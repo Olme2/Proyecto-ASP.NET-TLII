@@ -1,0 +1,54 @@
+@model ListarTablerosVM
+@{
+    var Tareas = ViewData["Tareas"] as List<ListarTareasVM>;
+    var idUsuario = Convert.ToInt32(ViewData["idUsuario"]);
+    var UsuarioPropietario = ViewData["UsuarioPropietario"] as Usuarios;
+}
+
+<h2>Tablero "@Model.nombre"</h2>
+<hr>
+<h3>Propietario</h3>
+<p>@UsuarioPropietario.nombreDeUsuario</p>
+<hr>
+<h3>Descripción</h3>  
+<p>@Model.descripcion</p>
+<hr>
+<h3>Tareas</h3>
+<div class="container mt-4">
+    @if(Tareas != null && Tareas.Count>0){
+        <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Color</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var tarea in Tareas){
+                <tr>
+                    <td>@tarea.id</td>
+                    <td>@tarea.nombre</td>
+                    <td>@tarea.descripcion</td>
+                    <td>@tarea.estado</td>
+                    <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
+                    <td>
+                    @if(tarea.idUsuarioAsignado == idUsuario || UsuarioPropietario.id == idUsuario){
+                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
+                    }
+                    @if(UsuarioPropietario.id == idUsuario){
+                            <a asp-controller="Tareas" asp-action="EliminarTarea" asp-route-id="@tarea.id" class="btn btn-danger">Borrar</a>
+                    }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    }else{
+        <h2 class="text-center text-muted">Sin Tareas</h2>
+    }
+    <a asp-action="Index" class="btn btn-danger">Volver</a>
+</div>

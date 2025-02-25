@@ -5,5 +5,6 @@ public interface ITableroRepository{
     Tablero ObtenerDetallesDeTablero(int id);
     List<Tablero> ListarTableros();
     List<Tablero> ListarTablerosDeUsuario(int idUsuario);
+    List<Tablero> ListarTablerosConTareasAsignadas(int idUsuario);
     void EliminarTableroPorId(int id);
 }

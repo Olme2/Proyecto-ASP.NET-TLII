@@ -1,11 +1,40 @@
 @model List<ListarTablerosVM>
-@foreach(var tablero in @Model){
-    if(tablero.)
+@{
+    var tablerosUsuario = ViewData["tablerosUsuario"] as List<ListarTablerosVM>;
 }
-
 <h1>Lista de Tableros</h1>
+<h2>Mis Tableros</h2>
+@if(tablerosUsuario != null &&  tablerosUsuario.Count>0){
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var tablero in tablerosUsuario){
+                    <tr>
+                        <td>@tablero.id</td>
+                        <td>@tablero.nombre</td>
+                        <td>@tablero.descripcion</td>
+                        <td>
+                            <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a>
+                            <a asp-action="EliminarTablero" asp-route-id="@tablero.id" class="btn btn-danger">Borrar</a>
+                            <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a>
+                            <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@tablero.id" class="btn btn-primary">Crear Tarea</a>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+}else{
+    <h2 class="text-center text-muted">SIN TABLEROS</h2>
+}
+<h2>Tableros con Tareas Asignadas</h2>
 @if(Model.Count>0){
-    <h2>Mis Tableros</h2>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -22,9 +51,7 @@
                     <td>@tablero.nombre</td>
                     <td>@tablero.descripcion</td>
                     <td>
-                        <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a>
-                        <a asp-action="EliminarTablero" asp-route-id="@tablero.id" class="btn btn-danger">Borrar</a>
-                        <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@tablero.id" class="btn btn-primary">Crear Tarea</a>
+                        <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a>
                     </td>
                 </tr>
             }

@@ -22,10 +22,11 @@ public class TableroRepository : ITableroRepository{
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
-            command.Parameters.AddWithValue("@id", tablero.id);
+            command.Parameters.AddWithValue("@id", id);
             command.Parameters.AddWithValue("@idUsuario", tablero.idUsuarioPropietario);
             command.Parameters.AddWithValue("@nombre", tablero.nombre);
             command.Parameters.AddWithValue("@descripcion", tablero.descripcion);
+            command.ExecuteNonQuery();
             connection.Close();
         }
     }
@@ -106,6 +107,32 @@ public class TableroRepository : ITableroRepository{
             connection.Close();
         }
         return listaDeTableros;
+    }
+    public List<Tablero> ListarTablerosConTareasAsignadas(int idUsuario){
+        List<Tablero> tableros = new List<Tablero>();
+        string QueryString = @"SELECT DISTINCT t.* FROM Tablero t INNER JOIN Tarea ta ON t.id = ta.id_tablero WHERE ta.id_usuario_asignado = @idUsuario AND t.id_usuario_propietario <> @idUsuario;";
+        using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
+            connection.Open();
+            SqliteCommand command = new SqliteCommand(QueryString, connection);
+            command.Parameters.AddWithValue("@idUsuario", idUsuario);
+            using(SqliteDataReader reader = command.ExecuteReader()){
+                while(reader.Read()){
+                    Tablero tablero = new Tablero();
+                    tablero.id = Convert.ToInt32(reader["id"]);
+                    tablero.idUsuarioPropietario = Convert.ToInt32(idUsuario);
+                    var nombre = reader["nombre"].ToString();
+                    var descripcion = reader["descripcion"].ToString();
+                    if(nombre != null){
+                        tablero.nombre = nombre;
+                    }
+                    if(descripcion != null){
+                        tablero.descripcion = descripcion;
+                    }
+                    tableros.Add(tablero);
+                }
+            }
+        }
+        return tableros;
     }
     public void EliminarTableroPorId(int id){
         string QueryString = @"DELETE FROM Tablero WHERE id = @id AND id NOT IN (SELECT id_tablero FROM Tarea WHERE id_tablero = @id);";

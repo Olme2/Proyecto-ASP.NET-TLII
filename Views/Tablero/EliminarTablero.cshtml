@@ -1,12 +1,22 @@
 @model int
+@{
+    var errorMessage = ViewData["ErrorMessage"] as string;
+}
 
-<div class="container mt-4">
-    <div class="mb-4">
-        <h2 class="text-center">Eliminacion del tablero n°@Model</h2>
+@if(errorMessage!=null && errorMessage.Length>0) {
+    <div class="alert alert-danger">
+        @errorMessage
     </div>
-    <h3 class="text-center">¿Desea eliminar el tablero?</h3>
-    <div class="text-center">
-        <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@Model" class="btn btn-danger">Eliminar</a>
-        <a asp-controller="Tablero" asp-action="Index" class="btn btn-primary">Cancelar</a>
+    <a asp-action="Index" class="btn btn-primary">Volver</a>
+}else{
+    <div class="container mt-4">
+        <div class="mb-4">
+            <h2 class="text-center">Eliminacion del tablero n°@Model</h2>
+        </div>
+        <h3 class="text-center">¿Desea eliminar el tablero?</h3>
+        <div class="text-center">
+            <a asp-action="Eliminar" asp-route-id="@Model" class="btn btn-danger">Eliminar</a>
+            <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+        </div>
     </div>
-</div>
+}

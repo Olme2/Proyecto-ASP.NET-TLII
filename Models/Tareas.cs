@@ -35,6 +35,7 @@ public class Tareas{
         Estado = tareaVM.estado;
     }
     public Tareas(ModificarTareaVM tareaVM){
+        Id = tareaVM.id;
         IdTablero = tareaVM.idTablero;
         Nombre = tareaVM.nombre;
         Descripcion = tareaVM.descripcion;

@@ -12,6 +12,7 @@ public class TareasController : Controller{
     }
     public IActionResult Index(){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        HttpContext.Session.SetString("origen", "Tareas");
         var id = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
         var tareas = repositorioTareas.ListarTareasDeUsuario(id);
         var tareasVM = tareas.Select(t => new ListarTareasVM(t)).ToList();
@@ -28,37 +29,48 @@ public class TareasController : Controller{
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
         var tarea = new Tareas(tareaVM);
         repositorioTareas.CrearTarea(tarea.idTablero, tarea);
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", "Tablero");
     }
     [HttpGet]
-    public IActionResult ModificarTarea(int idTarea){
+    public IActionResult ModificarTarea(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        TempData["PreviousUrl"] = Request.Headers["Referer"].ToString();
         List<Usuarios> usuarios = repositorioUsuarios.ListarUsuarios();
         ViewData["Usuarios"] = usuarios.Select(u=> new SelectListItem
         {
             Value = u.id.ToString(), 
             Text = u.nombreDeUsuario
         }).ToList();
-        var tarea = repositorioTareas.ObtenerDetallesDeTarea(idTarea);
+        var tarea = repositorioTareas.ObtenerDetallesDeTarea(id);
         var tareaVM = new ModificarTareaVM(tarea);
         return View(tareaVM);
     }
     [HttpPost]
     public IActionResult Modificar(ModificarTareaVM tareaVM){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        string origen = HttpContext.Session.GetString("origen");
         var tarea = new Tareas(tareaVM);
         repositorioTareas.ModificarTarea(tarea.id,tarea);
+        if(origen == "Tablero"){
+            return RedirectToAction("VerTablero", "Tablero", new {id = tareaVM.idTablero});
+        }
         return RedirectToAction("Index");
     }
     [HttpGet]
     public IActionResult EliminarTarea(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        TempData["PreviousUrl"] = Request.Headers["Referer"].ToString();
+        ViewData["idTablero"] = repositorioTareas.ObtenerDetallesDeTarea(id).idTablero;
         return View(id);
     }
-    [HttpPost]
+    [HttpGet]
     public IActionResult Eliminar(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        string origen = HttpContext.Session.GetString("origen");
         repositorioTareas.EliminarTarea(id);
+        if(origen == "Tablero"){
+            return RedirectToAction("VerTablero", "Tablero", new {id = Convert.ToInt32(TempData["idTablero"])});
+        }
         return RedirectToAction("Index");
     }
 }

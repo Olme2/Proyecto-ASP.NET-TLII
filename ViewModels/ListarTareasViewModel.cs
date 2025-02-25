@@ -6,6 +6,7 @@ public class ListarTareasVM{
     private string Descripcion;
     private string Color;
     private Tareas.EstadoTarea Estado;
+    private int? IdUsuarioAsignado;
     public ListarTareasVM(){
         Nombre = string.Empty;
         Descripcion = string.Empty;
@@ -17,10 +18,12 @@ public class ListarTareasVM{
         Descripcion = tarea.descripcion;
         Color = tarea.color;
         Estado = tarea.estado;
+        IdUsuarioAsignado = tarea.idUsuarioAsignado;
     }
     public int id {get => Id; set => Id = value;}
     public string nombre {get => Nombre; set => Nombre = value;}
     public string descripcion {get => Descripcion; set => Descripcion = value;}
     public string color {get => Color; set => Color = value;}
     public Tareas.EstadoTarea estado {get => Estado; set => Estado = value;}
+    public int? idUsuarioAsignado {get => IdUsuarioAsignado; set => IdUsuarioAsignado = value;}
 }

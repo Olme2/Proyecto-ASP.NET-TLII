@@ -13,7 +13,11 @@ public class TareasRepository : ITareasRepository{
             command.Parameters.AddWithValue("@idTablero", idTablero);
             command.Parameters.AddWithValue("@nombre", tarea.nombre);
             command.Parameters.AddWithValue("@estado", tarea.estado);
-            command.Parameters.AddWithValue("@descripcion", tarea.descripcion);
+            if(tarea.descripcion!=null){
+                command.Parameters.AddWithValue("@descripcion", tarea.descripcion);
+            }else{
+                command.Parameters.AddWithValue("@descripcion", DBNull.Value);
+            }
             command.Parameters.AddWithValue("@color", tarea.color);
             command.ExecuteNonQuery();
             connection.Close();
@@ -28,9 +32,17 @@ public class TareasRepository : ITareasRepository{
             command.Parameters.AddWithValue("@idTablero", tarea.idTablero);
             command.Parameters.AddWithValue("@nombre", tarea.nombre);
             command.Parameters.AddWithValue("@estado", tarea.estado);
-            command.Parameters.AddWithValue("@descripcion", tarea.descripcion);
+            if(tarea.descripcion!=null){
+                command.Parameters.AddWithValue("@descripcion", tarea.descripcion);
+            }else{
+                command.Parameters.AddWithValue("@descripcion", DBNull.Value);
+            }
             command.Parameters.AddWithValue("@color", tarea.color);
-            command.Parameters.AddWithValue("@idUsuario", tarea.idUsuarioAsignado);
+            if(tarea.idUsuarioAsignado!=-1){
+                command.Parameters.AddWithValue("@idUsuario", tarea.idUsuarioAsignado);
+            }else{
+                command.Parameters.AddWithValue("@idUsuario", DBNull.Value);
+            }
             command.ExecuteNonQuery();
             connection.Close();
         }
@@ -59,7 +71,11 @@ public class TareasRepository : ITareasRepository{
                     if(color != null){
                         tarea.color = color;
                     }
-                    tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    if(reader["id_usuario_asignado"] != DBNull.Value){
+                        tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    }else{
+                        tarea.idUsuarioAsignado = null;
+                    }
                 }
             }
             connection.Close();
@@ -124,7 +140,11 @@ public class TareasRepository : ITareasRepository{
                     if(color != null){
                         tarea.color = color;
                     }
-                    tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    if(reader["id_usuario_asignado"] != DBNull.Value){
+                        tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    }else{
+                        tarea.idUsuarioAsignado = null;
+                    }
                     listaDeTareas.Add(tarea);
                 }
             }

@@ -5,16 +5,36 @@ public class TableroController : Controller{
     private readonly ILogger<TableroController> _logger;
     private ITableroRepository repositorioTablero;
     private IUsuariosRepository repositorioUsuarios;
-    public TableroController(ILogger<TableroController> logger, ITableroRepository ReposiotrioTablero, IUsuariosRepository RepositorioUsuarios){
+    private ITareasRepository repositorioTareas;
+    public TableroController(ILogger<TableroController> logger, ITableroRepository ReposiotrioTablero, IUsuariosRepository RepositorioUsuarios, ITareasRepository RepositorioTareas){
         _logger = logger;
         repositorioTablero = ReposiotrioTablero;
         repositorioUsuarios = RepositorioUsuarios;
+        repositorioTareas = RepositorioTareas;
     }
     public IActionResult Index(){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
-        var tableros = repositorioTablero.ListarTableros();
+        int idUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
+        var tableros = repositorioTablero.ListarTablerosConTareasAsignadas(idUsuario);
         var tablerosVM = tableros.Select(t => new ListarTablerosVM(t)).ToList();
+        var tablerosUsuario = repositorioTablero.ListarTablerosDeUsuario(idUsuario);
+        var tablerosUsuarioVM = tablerosUsuario.Select(t => new ListarTablerosVM(t)).ToList();
+        ViewData["tablerosUsuario"] = tablerosUsuarioVM;
         return View(tablerosVM);
+    }
+    public IActionResult VerTablero(int id){
+        if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        HttpContext.Session.SetString("origen", "Tablero");
+        int idUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
+        var tablero = repositorioTablero.ObtenerDetallesDeTablero(id);
+        var UsuarioPropietario = repositorioUsuarios.ObtenerDetallesDeUsuario(tablero.idUsuarioPropietario);
+        var tableroVM = new ListarTablerosVM(tablero);
+        var tareas = repositorioTareas.ListarTareasDeTablero(id);
+        var tareasVM = tareas.Select(t => new ListarTareasVM(t)).ToList();
+        ViewData["idUsuario"] = idUsuario;
+        ViewData["Tareas"] = tareasVM;
+        ViewData["UsuarioPropietario"] = UsuarioPropietario;
+        return View(tableroVM);
     }
     [HttpGet]
     public IActionResult AltaTablero(){
@@ -52,9 +72,13 @@ public class TableroController : Controller{
     [HttpGet]
     public IActionResult EliminarTablero(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        var tareas = repositorioTareas.ListarTareasDeTablero(id);
+        if(tareas.Count>0){
+            ViewData["ErrorMessage"] = "No se puede borrar el tablero porque tiene tareas cargadas.";
+        }
         return View(id);
     }
-    [HttpPost]
+    [HttpGet]
     public IActionResult Eliminar(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
         repositorioTablero.EliminarTableroPorId(id);

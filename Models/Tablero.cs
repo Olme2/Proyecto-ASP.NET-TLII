@@ -25,6 +25,7 @@ public class Tablero{
         Descripcion = tableroVM.descripcion;
     }
     public Tablero(ModificarTableroVM tableroVM){
+        Id = tableroVM.id;
         IdUsuarioPropietario = tableroVM.idUsuarioPropietario;
         Nombre = tableroVM.nombre;
         Descripcion = tableroVM.descripcion;

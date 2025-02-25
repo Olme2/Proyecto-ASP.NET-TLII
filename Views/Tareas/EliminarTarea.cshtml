@@ -1,4 +1,8 @@
 @model int
+@{
+    string? previousUrl = TempData["PreviousUrl"] as string;
+    int idTablero = Convert.ToInt32(ViewData["idTablero"]);
+}
 
 <div class="container mt-4">
     <div class="mb-4">
@@ -7,6 +11,11 @@
     <h3 class="text-center">¿Desea eliminar la tarea?</h3>
     <div class="text-center">
         <a asp-controller="Tareas" asp-action="Eliminar" asp-route-id="@Model" class="btn btn-danger">Eliminar</a>
-        <a asp-controller="Tareas" asp-action="Index" class="btn btn-primary">Cancelar</a>
+        @if(!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){
+            TempData["idTablero"]=idTablero;
+            <a asp-controller="Tablero" asp-action="VerTablero" asp-route-id="@idTablero" class="btn btn-primary">Cancelar</a>
+        }else{
+            <a asp-controller="Tareas" asp-action="Index" class="btn btn-primary">Cancelar</a>
+        }
     </div>
 </div>
