@@ -9,12 +9,13 @@ public class LoginController : Controller{
     }
     public IActionResult Index(){
         var model = new LoginVM{
-            autenticado = HttpContext.Session.GetString("autenticado") == "true"
+            autenticado = HttpContext.Session.GetString("autenticado") == "true",
+            error = string.Empty
         };
         return View(model);
     }
     public IActionResult Login(LoginVM model){
-        Usuarios usuario = _repositorioUsuarios.ObtenerUsuarioPorNombreYPassword(model.nombreDeUsuario, model.password);
+        Usuarios? usuario = _repositorioUsuarios.ObtenerUsuarioPorNombreYPassword(model.nombreDeUsuario, model.password);
         if(usuario != null){
             HttpContext.Session.SetString("Autenticado", "true");
             HttpContext.Session.SetInt32("Id", usuario.id);
@@ -22,12 +23,33 @@ public class LoginController : Controller{
             HttpContext.Session.SetString("Rol", usuario.rolUsuario.ToString());
             return RedirectToAction("Index", "Tablero");
         }
-        model.error = "Usuario o contraseña incorrectos";
+        model.id = _repositorioUsuarios.BuscarIdPorNombreDeUsuario(model.nombreDeUsuario);
+        if(model.id!=-1){ 
+            model.error = "Contraseña incorrecta";
+        }else{
+            model.error = "Usuario inexistente";
+        }
         model.autenticado = false;
         return View("Index", model);
     }
     public IActionResult Logout(){
         HttpContext.Session.Clear();
+        return RedirectToAction("Index");
+    }
+    [HttpGet]
+    public IActionResult CambiarPassword(int id){
+        var usuario = _repositorioUsuarios.ObtenerDetallesDeUsuario(id);
+        var usuarioVM = new CambiarPasswordVM(usuario);
+        return View(usuarioVM);
+    }
+    [HttpPost]
+    public IActionResult Cambiar(CambiarPasswordVM usuarioVM){
+        if (!ModelState.IsValid){
+            return View("CambiarPassword", usuarioVM);
+        }
+        var usuario = new Usuarios(usuarioVM);
+        _repositorioUsuarios.CambiarPassword(usuario.id, usuario.password);
+        TempData["Mensaje"] = "¡Contraseña cambiada exitosamente!";
         return RedirectToAction("Index");
     }
 }

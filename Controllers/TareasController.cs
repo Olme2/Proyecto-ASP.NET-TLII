@@ -48,7 +48,7 @@ public class TareasController : Controller{
     [HttpPost]
     public IActionResult Modificar(ModificarTareaVM tareaVM){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
-        string origen = HttpContext.Session.GetString("origen");
+        string? origen = HttpContext.Session.GetString("origen");
         var tarea = new Tareas(tareaVM);
         repositorioTareas.ModificarTarea(tarea.id,tarea);
         if(origen == "Tablero"){
@@ -66,7 +66,7 @@ public class TareasController : Controller{
     [HttpGet]
     public IActionResult Eliminar(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
-        string origen = HttpContext.Session.GetString("origen");
+        string? origen = HttpContext.Session.GetString("origen");
         repositorioTareas.EliminarTarea(id);
         if(origen == "Tablero"){
             return RedirectToAction("VerTablero", "Tablero", new {id = Convert.ToInt32(TempData["idTablero"])});

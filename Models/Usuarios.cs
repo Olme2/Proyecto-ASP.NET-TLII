@@ -25,6 +25,11 @@ public class Usuarios{
         Password = usuarioVM.password;
         RolUsuario = usuarioVM.rolUsuario;
     }
+    public Usuarios(CambiarPasswordVM usuarioVM){
+        Id = usuarioVM.id;
+        NombreDeUsuario = usuarioVM.nombreDeUsuario;
+        Password = usuarioVM.password;
+    }
     public int id {get => Id; set => Id = value;}
     public string nombreDeUsuario {get => NombreDeUsuario; set => NombreDeUsuario = value;}
     public string password {get => Password; set => Password = value;}
