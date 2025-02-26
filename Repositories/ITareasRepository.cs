@@ -5,6 +5,6 @@ public interface ITareasRepository{
     Tareas ObtenerDetallesDeTarea(int id);
     List<Tareas> ListarTareasDeUsuario(int idUsuario);
     List<Tareas> ListarTareasDeTablero(int idTablero);
-    void AsignarUsuarioATarea(int idUsuario, int idTarea);
+    void AsignarUsuarioATarea(int? idUsuario, int idTarea);
     void EliminarTarea(int idTarea);
 }

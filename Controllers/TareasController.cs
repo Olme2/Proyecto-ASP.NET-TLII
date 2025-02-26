@@ -35,12 +35,6 @@ public class TareasController : Controller{
     public IActionResult ModificarTarea(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
         TempData["PreviousUrl"] = Request.Headers["Referer"].ToString();
-        List<Usuarios> usuarios = repositorioUsuarios.ListarUsuarios();
-        ViewData["Usuarios"] = usuarios.Select(u=> new SelectListItem
-        {
-            Value = u.id.ToString(), 
-            Text = u.nombreDeUsuario
-        }).ToList();
         var tarea = repositorioTareas.ObtenerDetallesDeTarea(id);
         var tareaVM = new ModificarTareaVM(tarea);
         return View(tareaVM);
@@ -55,6 +49,21 @@ public class TareasController : Controller{
             return RedirectToAction("VerTablero", "Tablero", new {id = tareaVM.idTablero});
         }
         return RedirectToAction("Index");
+    }
+    [HttpGet]
+    public IActionResult AsignarUsuario(int id){
+        if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        var tarea = repositorioTareas.ObtenerDetallesDeTarea(id);
+        var model = new AsignarUsuarioVM(tarea);
+        model.listaDeUsuarios = repositorioUsuarios.ListarUsuarios();
+        return View(model);
+    }
+    [HttpPost]
+    public IActionResult Asignar(AsignarUsuarioVM model){
+        if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        var tarea = new Tareas(model);
+        repositorioTareas.AsignarUsuarioATarea(tarea.idUsuarioAsignado, tarea.id);
+        return RedirectToAction("VerTablero", "Tablero", new {id= tarea.idTablero});
     }
     [HttpGet]
     public IActionResult EliminarTarea(int id){

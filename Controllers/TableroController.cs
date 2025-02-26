@@ -21,7 +21,7 @@ public class TableroController : Controller{
         var tablerosUsuarioVM = tablerosUsuario.Select(t => new ListarTablerosVM(t)).ToList();
         ViewData["tablerosUsuario"] = tablerosUsuarioVM;
         return View(tablerosVM);
-    }
+    }    
     public IActionResult VerTablero(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
         HttpContext.Session.SetString("origen", "Tablero");

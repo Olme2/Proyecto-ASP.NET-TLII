@@ -24,7 +24,7 @@ public class TareasRepository : ITareasRepository{
         }
     }
     public void ModificarTarea(int id, Tareas tarea){
-        string QueryString = @"UPDATE Tarea SET id_tablero = @idTablero, nombre = @nombre, estado = @estado, descripcion = @descripcion, color = @color, id_usuario_asignado = @idUsuario WHERE id = @id;";
+        string QueryString = @"UPDATE Tarea SET id_tablero = @idTablero, nombre = @nombre, estado = @estado, descripcion = @descripcion, color = @color WHERE id = @id;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
@@ -38,11 +38,6 @@ public class TareasRepository : ITareasRepository{
                 command.Parameters.AddWithValue("@descripcion", DBNull.Value);
             }
             command.Parameters.AddWithValue("@color", tarea.color);
-            if(tarea.idUsuarioAsignado!=-1){
-                command.Parameters.AddWithValue("@idUsuario", tarea.idUsuarioAsignado);
-            }else{
-                command.Parameters.AddWithValue("@idUsuario", DBNull.Value);
-            }
             command.ExecuteNonQuery();
             connection.Close();
         }
@@ -152,12 +147,16 @@ public class TareasRepository : ITareasRepository{
         }
         return listaDeTareas;
     }
-    public void AsignarUsuarioATarea(int idUsuario, int idTarea){
+    public void AsignarUsuarioATarea(int? idUsuario, int idTarea){
         string QueryString = @"UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id = @idTarea;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
-            command.Parameters.AddWithValue("@idUsuario", idUsuario);
+            if(idUsuario!=-1){
+                command.Parameters.AddWithValue("@idUsuario", idUsuario);
+            }else{
+                command.Parameters.AddWithValue("@idUsuario", DBNull.Value);
+            }
             command.Parameters.AddWithValue("@idTarea", idTarea);
             command.ExecuteNonQuery();
             connection.Close();

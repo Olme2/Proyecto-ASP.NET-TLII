@@ -41,7 +41,14 @@ public class Tareas{
         Descripcion = tareaVM.descripcion;
         Color = tareaVM.color;
         Estado = tareaVM.estado;
-        IdUsuarioAsignado= tareaVM.idUsuarioAsignado;
+    }
+    public Tareas(AsignarUsuarioVM model){
+        Id = model.idTarea;
+        IdTablero = model.idTablero;
+        Nombre = string.Empty;
+        Descripcion = string.Empty;
+        Color = string.Empty;
+        IdUsuarioAsignado = model.idUsuario;
     }
     public int id {get => Id; set => Id = value;}
     public int idTablero {get => IdTablero; set => IdTablero = value;}

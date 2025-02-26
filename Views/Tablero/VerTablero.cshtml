@@ -7,9 +7,11 @@
 
 <h2>Tablero "@Model.nombre"</h2>
 <hr>
-<h3>Propietario</h3>
-<p>@UsuarioPropietario.nombreDeUsuario</p>
-<hr>
+@if(UsuarioPropietario!=null){
+    <h3>Propietario</h3>
+    <p>@UsuarioPropietario.nombreDeUsuario</p>
+    <hr>
+}
 <h3>Descripción</h3>  
 <p>@Model.descripcion</p>
 <hr>
@@ -36,12 +38,13 @@
                     <td>@tarea.estado</td>
                     <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                     <td>
-                    @if(tarea.idUsuarioAsignado == idUsuario || UsuarioPropietario.id == idUsuario){
-                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
+                    @if(tarea.idUsuarioAsignado == idUsuario || (UsuarioPropietario!=null && UsuarioPropietario.id == idUsuario)){
+                        <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
                     }
-                    @if(UsuarioPropietario.id == idUsuario){
-                            <a asp-controller="Tareas" asp-action="EliminarTarea" asp-route-id="@tarea.id" class="btn btn-danger">Borrar</a>
+                    @if(UsuarioPropietario!=null && UsuarioPropietario.id == idUsuario){
+                        <a asp-controller="Tareas" asp-action="EliminarTarea" asp-route-id="@tarea.id" class="btn btn-danger">Borrar</a>
                     }
+                    <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Asignar Usuario</a>
                     </td>
                 </tr>
             }
