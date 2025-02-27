@@ -3,12 +3,19 @@ namespace tl2_proyecto_2024_Olme2.Models;
 public class CrearTableroVM{
     private int IdUsuarioPropietario;
     private string Nombre;
-    private string Descripcion;
+    private string? Descripcion;
     public CrearTableroVM(){
         Nombre = string.Empty;
         Descripcion = string.Empty;
     }
+    public CrearTableroVM(int idUsuarioPropietario){
+        IdUsuarioPropietario = idUsuarioPropietario;
+        Nombre = string.Empty;
+        Descripcion = string.Empty;
+    }
+    [Required(ErrorMessage = "Id de usuario propietario obligatorio.")]
     public int idUsuarioPropietario {get => IdUsuarioPropietario; set => IdUsuarioPropietario = value;}
+    [Required(ErrorMessage = "Nombre del tablero obligatorio.")]
     public string nombre {get => Nombre; set => Nombre = value;}
-    public string descripcion {get => Descripcion; set => Descripcion = value;}
+    public string? descripcion {get => Descripcion; set => Descripcion = value;}
 }

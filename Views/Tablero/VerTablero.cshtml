@@ -1,23 +1,16 @@
-@model ListarTablerosVM
-@{
-    var Tareas = ViewData["Tareas"] as List<ListarTareasVM>;
-    var idUsuario = Convert.ToInt32(ViewData["idUsuario"]);
-    var UsuarioPropietario = ViewData["UsuarioPropietario"] as Usuarios;
-}
+@model VerTableroVM
 
 <h2>Tablero "@Model.nombre"</h2>
 <hr>
-@if(UsuarioPropietario!=null){
-    <h3>Propietario</h3>
-    <p>@UsuarioPropietario.nombreDeUsuario</p>
-    <hr>
-}
+<h3>Propietario</h3>
+<p>@Model.nombreUsuarioPropietario</p>
+<hr>
 <h3>Descripción</h3>  
 <p>@Model.descripcion</p>
 <hr>
 <h3>Tareas</h3>
 <div class="container mt-4">
-    @if(Tareas != null && Tareas.Count>0){
+    @if(Model.listaDeTareas.Count>0){
         <table class="table table-bordered">
         <thead>
             <tr>
@@ -30,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(var tarea in Tareas){
+            @foreach(var tarea in Model.listaDeTareas){
                 <tr>
                     <td>@tarea.id</td>
                     <td>@tarea.nombre</td>
@@ -38,13 +31,13 @@
                     <td>@tarea.estado</td>
                     <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                     <td>
-                    @if(tarea.idUsuarioAsignado == idUsuario || (UsuarioPropietario!=null && UsuarioPropietario.id == idUsuario)){
+                    @if(tarea.idUsuarioAsignado == Model.idUsuarioVisitante || Model.esDueño){
                         <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
                     }
-                    @if(UsuarioPropietario!=null && UsuarioPropietario.id == idUsuario){
+                    @if(Model.esDueño){
                         <a asp-controller="Tareas" asp-action="EliminarTarea" asp-route-id="@tarea.id" class="btn btn-danger">Borrar</a>
+                        <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Asignar Usuario</a>
                     }
-                    <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Asignar Usuario</a>
                     </td>
                 </tr>
             }

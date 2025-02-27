@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using tl2_proyecto_2024_Olme2.Models;
 public class LoginController : Controller{
     private readonly ILogger<LoginController> _logger;
-    private readonly IUsuariosRepository _repositorioUsuarios;
+    private readonly IUsuariosRepository repositorioUsuarios;
     public LoginController(ILogger<LoginController> logger, IUsuariosRepository RepositorioUsuarios){
         _logger = logger;
-        _repositorioUsuarios = RepositorioUsuarios;
+        repositorioUsuarios = RepositorioUsuarios;
     }
     public IActionResult Index(){
         var model = new LoginVM{
@@ -15,7 +15,7 @@ public class LoginController : Controller{
         return View(model);
     }
     public IActionResult Login(LoginVM model){
-        Usuarios? usuario = _repositorioUsuarios.ObtenerUsuarioPorNombreYPassword(model.nombreDeUsuario, model.password);
+        Usuarios? usuario = repositorioUsuarios.ObtenerUsuarioPorNombreYPassword(model.nombreDeUsuario, model.password);
         if(usuario != null){
             HttpContext.Session.SetString("Autenticado", "true");
             HttpContext.Session.SetInt32("Id", usuario.id);
@@ -23,7 +23,7 @@ public class LoginController : Controller{
             HttpContext.Session.SetString("Rol", usuario.rolUsuario.ToString());
             return RedirectToAction("Index", "Tablero");
         }
-        model.id = _repositorioUsuarios.BuscarIdPorNombreDeUsuario(model.nombreDeUsuario);
+        model.id = repositorioUsuarios.BuscarIdPorNombreDeUsuario(model.nombreDeUsuario);
         if(model.id!=-1){ 
             model.error = "Contraseña incorrecta";
         }else{
@@ -38,7 +38,7 @@ public class LoginController : Controller{
     }
     [HttpGet]
     public IActionResult CambiarPassword(int id){
-        var usuario = _repositorioUsuarios.ObtenerDetallesDeUsuario(id);
+        var usuario = repositorioUsuarios.ObtenerDetallesDeUsuario(id);
         var usuarioVM = new CambiarPasswordVM(usuario);
         return View(usuarioVM);
     }
@@ -48,7 +48,7 @@ public class LoginController : Controller{
             return View("CambiarPassword", usuarioVM);
         }
         var usuario = new Usuarios(usuarioVM);
-        _repositorioUsuarios.CambiarPassword(usuario.id, usuario.password);
+        repositorioUsuarios.CambiarPassword(usuario.id, usuario.password);
         TempData["Mensaje"] = "¡Contraseña cambiada exitosamente!";
         return RedirectToAction("Index");
     }
