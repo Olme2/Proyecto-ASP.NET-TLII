@@ -35,6 +35,10 @@ public class TableroController : Controller{
         var EsAdmin = HttpContext.Session.GetString("Rol") == "Administrador"; 
         HttpContext.Session.SetString("origen", "Tablero"); //Se crea una variable llamada "origen" para guardar la url anterior, ya que luego si accedemos a una tarea, se puede acceder desde dos lugares distintos.
         var tablero = repositorioTablero.ObtenerDetallesDeTablero(id);
+        if(tablero.nombre == string.Empty){ //Verificamos si el tablero existe, si no existe se redirecciona a Index.
+            TempData["ErrorMessage"] = "El tablero no existe";
+            return RedirectToAction("Index", "Tablero");
+        }
         var tareas = repositorioTareas.ListarTareasDeTablero(id);
         var tareasVM = tareas.Select(t => new ListarTareasVM(t)).ToList();
         var usuarioPropietario = repositorioUsuarios.ObtenerDetallesDeUsuario(tablero.idUsuarioPropietario);
@@ -57,13 +61,13 @@ public class TableroController : Controller{
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
         var model = new CrearTableroVM();
         var idUsuarioPropietario = HttpContext.Session.GetInt32("Id");
-        if(idUsuarioPropietario!=null){
+        if(idUsuarioPropietario.HasValue){
             model = new CrearTableroVM((int)idUsuarioPropietario); //Se hace verificacion porque dice que puede ser null, pero si el usuario esta logueado no deberia. Se crea un modelo con el id del usuario que controla el sistema para que se coloque como propietario en la vista en un input hidden.
         }
         return View(model);
     }
     [HttpPost]
-    public IActionResult CrearTablero(CrearTableroVM tableroVM){ //
+    public IActionResult CrearTablero(CrearTableroVM tableroVM){ //Método que crea un nuevo tablero.
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("AltaTablero");
         var tablero = new Tablero(tableroVM);
@@ -71,34 +75,66 @@ public class TableroController : Controller{
         return RedirectToAction("Index");
     }
     [HttpGet]
-    public IActionResult ModificarTablero(int id){
+    public IActionResult ModificarTablero(int id){ //Vista para modificar un tablero dependiendo el id, solo se puede acceder a el si sos dueño del tablero o sos admin.
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        var EsAdmin = HttpContext.Session.GetString("Rol") == "Administrador";
+        ViewData["EsAdmin"] = EsAdmin; 
         var usuarios = repositorioUsuarios.ListarUsuarios();
         var usuariosVM = usuarios.Select(u => new ListarUsuariosVM(u)).ToList();
         var tablero = repositorioTablero.ObtenerDetallesDeTablero(id);
+        if(tablero.nombre == string.Empty){ //Verificamos si el tablero existe, si no existe se redirecciona a Index.
+            TempData["ErrorMessage"] = "El tablero no existe";
+            return RedirectToAction("Index", "Tablero");
+        }
         var tableroVM = new ModificarTableroVM(tablero, usuariosVM);
+        if(!EsAdmin){ //Verificamos si es admin para luego determinar si puede acceder el usuario o no.
+            int idUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
+            var esDueño = tablero.idUsuarioPropietario == idUsuario;
+            if(!esDueño){ //Se verifica si, el usuario que no es admin, es dueño del tablero al menos.
+                TempData["ErrorMessage"] = "Acceso denegado";
+                return RedirectToAction("Index", "Tablero"); //Sino se lo redirecciona al index de tablero, con un mensaje de acceso denegado.
+            }
+        }
         return View(tableroVM);
     }
     [HttpPost]
-    public IActionResult Modificar(ModificarTableroVM tableroVM){
+    public IActionResult Modificar(ModificarTableroVM tableroVM){ //Método que modifica el tablero.
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        if(!ModelState.IsValid) return RedirectToAction("ModificarTablero", tableroVM.id);
         var tablero = new Tablero(tableroVM);
         repositorioTablero.ModificarTablero(tablero.id, tablero);
         return RedirectToAction("Index");
     }
     [HttpGet]
-    public IActionResult EliminarTablero(int id){
+    public IActionResult EliminarTablero(int id){ //Vista para eliminar un tablero por id. Solo puede acceder el admin o el dueño del tablero y solo si el tablero no tiene tareas cargadas.
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        var EsAdmin = HttpContext.Session.GetString("Rol") == "Administrador"; 
+        var tablero = repositorioTablero.ObtenerDetallesDeTablero(id);
+        if(tablero.nombre == string.Empty){ //Verificamos si el tablero existe, si no existe se redirecciona a Index.
+            TempData["ErrorMessage"] = "El tablero no existe";
+            return RedirectToAction("Index", "Tablero");
+        }
+        if(!EsAdmin){ //Verificamos si es admin para luego determinar si puede acceder el usuario o no.
+            int idUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
+            var esDueño = tablero.idUsuarioPropietario == idUsuario;
+            if(!esDueño){ //Se verifica si, el usuario que no es admin, es dueño del tablero al menos.
+                TempData["ErrorMessage"] = "Acceso denegado";
+                return RedirectToAction("Index", "Tablero"); //Sino se lo redirecciona al index de tablero, con un mensaje de acceso denegado.
+            }
+        }
         var tareas = repositorioTareas.ListarTareasDeTablero(id);
-        if(tareas.Count>0){
+        if(tareas.Count>0){ //Verificamos que el tablero no tenga tareas asignadas. Si las tiene, solo se muestra un mensaje de alerta y no deja borrar el tablero.
             ViewData["ErrorMessage"] = "No se puede borrar el tablero porque tiene tareas cargadas.";
         }
-        return View(id);
+        var tableroVM = new EliminarTableroVM(tablero);
+        return View(tableroVM);
     }
-    [HttpGet]
-    public IActionResult Eliminar(int id){
+    [HttpPost]
+    public IActionResult Eliminar(EliminarTableroVM tableroVM){ //Metodo para eliminar un tablero por id.
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
-        repositorioTablero.EliminarTableroPorId(id);
+        if(!ModelState.IsValid) return RedirectToAction("EliminarTablero", tableroVM.id);
+        var tablero = new Tablero(tableroVM);
+        repositorioTablero.EliminarTableroPorId(tablero.id);
         return RedirectToAction("Index");
     }
 }

@@ -1,24 +1,31 @@
 @model ModificarTableroVM
 
+@{
+    var EsAdmin = ViewData["EsAdmin"]; <!-- ViewData para comprobar si el usuario es admin y cambiar un input de label vista. -->
+}
 
 <h3 class="text-center">Modificar Tablero @Model.nombre</h3>
 <form asp-action="Modificar" method="post" class="form">
     <input type="hidden" asp-for="id" value="@Model.id">
-    <span asp-validation-for="id" class="text-danger"></span>
-    <div class="form-group">
-        <label asp-for="idUsuarioPropietario" class="form-label">Usuario Propietario</label>
-        <select asp-for="idUsuarioPropietario" class="form-select" value="@Model.idUsuarioPropietario">
-            @foreach (var usuario in Model.listaDeUsuarios)
-            {
-                <option value="@usuario.id">@usuario.nombreDeUsuario</option>
-            }
-        </select>
-        <span asp-validation-for="idUsuarioPropietario" class="text-danger"></span>
-    </div>
+    <span asp-validation-for="id" class="text-danger"></span> <!-- Validacion para id del tablero -->
+    @if(EsAdmin!=null && (bool)EsAdmin){ <!-- Si el usuario es admin, se puede cambiar el propietario del tablero, sino no. -->
+        <div class="form-group">
+            <label asp-for="idUsuarioPropietario" class="form-label">Usuario Propietario</label>
+            <select asp-for="idUsuarioPropietario" class="form-select" value="@Model.idUsuarioPropietario">
+                @foreach (var usuario in Model.listaDeUsuarios)
+                {
+                    <option value="@usuario.id">@usuario.nombreDeUsuario</option>
+                }
+            </select>
+        </div>
+    }else{
+        <input type="hidden" asp-for="idUsuarioPropietario" value="@Model.idUsuarioPropietario">
+    }
+    <span asp-validation-for="idUsuarioPropietario" class="text-danger"></span> <!-- Validacion para id del usuario propietario -->
     <div class="form-group">
         <label asp-for="nombre">Nombre</label>
         <input asp-for="nombre" value="@Model.nombre" class="form-control">
-        <span asp-validation-for="nombre" class="text-danger"></span>
+        <span asp-validation-for="nombre" class="text-danger"></span> <!-- Validacion para nombre del tablero -->
     </div>
     <div class="form-group">
         <label asp-for="descripcion">Descripción</label>

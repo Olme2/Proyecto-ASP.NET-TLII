@@ -6,7 +6,6 @@ public class Tablero{
     private string? Descripcion;
     public Tablero(){
         Nombre = string.Empty;
-        Descripcion = string.Empty;
     }
     public Tablero(int id, int idUsuarioPropietario, string nombre, string descripcion){
         Id = id;
@@ -29,6 +28,10 @@ public class Tablero{
         IdUsuarioPropietario = tableroVM.idUsuarioPropietario;
         Nombre = tableroVM.nombre;
         Descripcion = tableroVM.descripcion;
+    }
+    public Tablero(EliminarTableroVM tableroVM){
+        Id = tableroVM.id;
+        Nombre = tableroVM.nombre;
     }
     public int id {get => Id; set => Id = value;}
     public int idUsuarioPropietario {get => IdUsuarioPropietario; set => IdUsuarioPropietario = value;}
