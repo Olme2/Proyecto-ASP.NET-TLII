@@ -1,24 +1,32 @@
 @model ModificarTareaVM
 @{
-    string? previousUrl = TempData["PreviousUrl"] as string;
+    var previousUrl = TempData["PreviousUrl"] as string;
 }
 
-<h3 class="text-center">Modificar Tarea n° @Model.id</h3>
-<form asp-controller="Tareas" asp-action="Modificar" class="form">
+<h3 class="text-center">Modificar Tarea "@Model.nombre"</h3>
+<form asp-controller="Tareas" asp-action="Modificar" class="form" method="post">
     <input type="hidden" asp-for="id" value="@Model.id">
     <input type="hidden" asp-for="idTablero" value="@Model.idTablero">
-    <div class="form-group">
-        <label asp-for="nombre">Nombre</label>
-        <input asp-for="nombre" value="@Model.nombre" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label asp-for="descripcion">Descripción</label>
-        <input asp-for="descripcion" value="@Model.descripcion" class="form-control">
-    </div>
-    <div class="form-group">
-        <label asp-for="color" class="form-label">Color</label>
-        <input asp-for="color" value="@Model.color" type="color" class="form-control">
-    </div>
+    @if(@Model.esDueño){
+        <div class="form-group">
+            <label asp-for="nombre">Nombre</label>
+            <input asp-for="nombre" value="@Model.nombre" class="form-control">
+            <span asp-validation-for="nombre" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="descripcion">Descripción</label>
+            <input asp-for="descripcion" value="@Model.descripcion" class="form-control">
+        </div>
+        <div class="form-group">
+            <label asp-for="color" class="form-label">Color</label>
+            <input asp-for="color" value="@Model.color" type="color" class="form-control">
+        </div>
+    }else{
+        <input type="hidden" asp-for="nombre" value="@Model.nombre">
+        <span asp-validation-for="nombre" class="text-danger"></span>
+        <input type="hidden" asp-for="descripcion" value="@Model.descripcion">
+        <input type="hidden" asp-for="color" value="@Model.color">
+    }
     <div class="form-group">
         <label asp-for="estado" class="form-label">Estado</label>
         <select asp-for="estado" value="@Model.estado" class="form-select">
@@ -27,8 +35,9 @@
                 <option value="@estado">@estado</option>
             }
         </select>
+        <span asp-validation-for="estado" class="text-danger"></span>
     </div>
-    <div class=" mt-3">
+    <div class="mt-3">
         <button type="submit" class="btn btn-primary">Modificar</button>
         @if(!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){
             <a asp-controller="Tablero" asp-action="VerTablero" asp-route-id="@Model.idTablero" class="btn btn-secondary">Cancelar</a>
@@ -37,3 +46,5 @@
         }
     </div>
 </form>
+
+@section Scripts{<partial name="_ValidationScriptsPartial"/>}

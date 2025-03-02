@@ -21,7 +21,7 @@
                 <th>Color</th>
                 <th>Acción</th>
                 @if(Model.esDueño){ <!-- Si el usuario es dueño sea agrega una columna con el Id del usuario asignado. -->
-                    <th>ID Usuario Asignado</th>
+                    <th>Usuario Asignado</th>
                 }
             </tr>
         </thead>
@@ -47,7 +47,7 @@
                     }
                     </td>
                     @if(Model.esDueño){ <!-- Si el usuario es dueño tambien puede ver el ID del usuario asignado a la tarea. -->
-                        <td>@tarea.idUsuarioAsignado</td>
+                        <td>@tarea.nombreUsuarioAsignado</td>
                     }
                 </tr>
             }
@@ -56,5 +56,6 @@
     }else{
         <h2 class="text-center text-muted">Sin Tareas</h2>
     }
+    <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@Model.id" class="btn btn-primary">Crear Tarea</a>
     <a asp-action="Index" class="btn btn-danger">Volver</a>
 </div>

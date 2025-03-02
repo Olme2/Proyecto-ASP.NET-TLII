@@ -4,18 +4,25 @@ public class AsignarUsuarioVM{
     private int IdTarea;
     private int IdTablero;
     private int? IdUsuario;
-    private List<Usuarios> ListaDeUsuarios;
+    private string Nombre;
+    private List<ListarUsuariosVM> ListaDeUsuarios;
     public AsignarUsuarioVM(){
-        ListaDeUsuarios = new List<Usuarios>();
+        Nombre = string.Empty;
+        ListaDeUsuarios = new List<ListarUsuariosVM>();
     }
-    public AsignarUsuarioVM(Tareas tarea){
+    public AsignarUsuarioVM(Tareas tarea, List<ListarUsuariosVM> listaDeUsuarios){
         IdTarea = tarea.id;
         IdTablero = tarea.idTablero;
         IdUsuario = tarea.idUsuarioAsignado;
-        ListaDeUsuarios = new List<Usuarios>();
+        Nombre = tarea.nombre;
+        ListaDeUsuarios = listaDeUsuarios;
     }
+    [Required(ErrorMessage = "ID de tarea obligatorio.")]
     public int idTarea {get => IdTarea; set => IdTarea = value;}
+    [Required(ErrorMessage = "ID de tablero obligatorio.")]
     public int idTablero {get => IdTablero; set => IdTablero = value;}
     public int? idUsuario {get => IdUsuario; set => IdUsuario = value;}
-    public List<Usuarios> listaDeUsuarios {get => ListaDeUsuarios; set => ListaDeUsuarios = value;}
+    [Required(ErrorMessage = "Nombre de tarea obligatorio.")]
+    public string nombre {get => Nombre; set => Nombre = value;}
+    public List<ListarUsuariosVM> listaDeUsuarios {get => ListaDeUsuarios; set => ListaDeUsuarios = value;}
 }

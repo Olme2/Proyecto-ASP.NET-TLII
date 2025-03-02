@@ -70,7 +70,6 @@
                                 <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es dueño de estos tableros, tiene acceso a todas las funciones. -->
                                 <a asp-action="EliminarTablero" asp-route-id="@tablero.id" class="btn btn-danger">Borrar</a>
                                 <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a>
-                                <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@tablero.id" class="btn btn-primary">Crear Tarea</a>
                             </td>
                         </tr>
                 }

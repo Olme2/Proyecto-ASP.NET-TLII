@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.VisualBasic;
 using tl2_proyecto_2024_Olme2.Models;
 public class TableroController : Controller{
     private readonly ILogger<TableroController> _logger;
@@ -35,12 +36,18 @@ public class TableroController : Controller{
         var EsAdmin = HttpContext.Session.GetString("Rol") == "Administrador"; 
         HttpContext.Session.SetString("origen", "Tablero"); //Se crea una variable llamada "origen" para guardar la url anterior, ya que luego si accedemos a una tarea, se puede acceder desde dos lugares distintos.
         var tablero = repositorioTablero.ObtenerDetallesDeTablero(id);
-        if(tablero.nombre == string.Empty){ //Verificamos si el tablero existe, si no existe se redirecciona a Index.
+        if(tablero.id == 0){ //Verificamos si el tablero existe, si no existe se redirecciona a Index.
             TempData["ErrorMessage"] = "El tablero no existe";
             return RedirectToAction("Index", "Tablero");
         }
         var tareas = repositorioTareas.ListarTareasDeTablero(id);
-        var tareasVM = tareas.Select(t => new ListarTareasVM(t)).ToList();
+        var tareasVM = tareas.Select(t =>{
+            var nombreUsuarioAsignado = "Sin Asignar";
+            if(t.idUsuarioAsignado!=-1 && t.idUsuarioAsignado!=null){
+                nombreUsuarioAsignado = repositorioUsuarios.ObtenerDetallesDeUsuario((int)t.idUsuarioAsignado).nombreDeUsuario;                
+            }
+            return new ListarTareasVM(t, nombreUsuarioAsignado);
+        }).ToList();
         var usuarioPropietario = repositorioUsuarios.ObtenerDetallesDeUsuario(tablero.idUsuarioPropietario);
         var tableroVM = new VerTableroVM(tablero, tareasVM, usuarioPropietario.nombreDeUsuario); //Si es admin se obtienen todos los datos del tablero, de todas las tareas y el nombre del dueño.
         if(!EsAdmin){ //Verificamos si es admin para agregar acciones a todas las tareas o a solo las asignadas.
@@ -50,7 +57,7 @@ public class TableroController : Controller{
             var tieneTareas = tablerosConTareasAsignadas.Any(t => t.id == id);
             if(!esDueño && !tieneTareas){ //Se verifica si, el usuario que no es admin, cumple con los requisitos para ver dicho tablero (Ser dueño o tener tareas asignadas).
                 TempData["ErrorMessage"] = "Acceso denegado";
-                return RedirectToAction("Index", "Tablero"); //Sino se lo redirecciona al index de tablero, con un mensaje de acceso denegado.
+                return RedirectToAction("Index"); //Sino se lo redirecciona al index de tablero, con un mensaje de acceso denegado.
             }
             tableroVM = new VerTableroVM(tableroVM, esDueño, idUsuario); //Si cumple con los requisitos, se le agrega al VM ademas el id del usuario que controla el sistema, y un bool que nos dice si es dueño o no del tablero para establecer acciones para tareas.
         }
