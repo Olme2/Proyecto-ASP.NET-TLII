@@ -1,21 +1,22 @@
-@model int
+@model EliminarTareaVM
 @{
     string? previousUrl = TempData["PreviousUrl"] as string;
-    int idTablero = Convert.ToInt32(ViewData["idTablero"]);
 }
 
 <div class="container mt-4">
     <div class="mb-4">
-        <h2 class="text-center">Eliminacion de la tarea n°@Model</h2>
+        <h2 class="text-center">Eliminación de la tarea "@Model.nombre"</h2>
     </div>
     <h3 class="text-center">¿Desea eliminar la tarea?</h3>
     <div class="text-center">
-        <a asp-controller="Tareas" asp-action="Eliminar" asp-route-id="@Model" class="btn btn-danger">Eliminar</a>
-        @if(!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){
-            TempData["idTablero"]=idTablero;
-            <a asp-controller="Tablero" asp-action="VerTablero" asp-route-id="@idTablero" class="btn btn-primary">Cancelar</a>
+        <form asp-action="Eliminar" method="post">
+            <input type="hidden" asp-for="@Model.id"/>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+        @if (!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){
+            <a asp-controller="Tablero" asp-action="VerTablero" asp-route-id="@Model.idTablero" class="btn btn-primary">Cancelar</a>
         }else{
-            <a asp-controller="Tareas" asp-action="Index" class="btn btn-primary">Cancelar</a>
+            <a asp-action="Index" class="btn btn-primary">Cancelar</a>
         }
     </div>
 </div>

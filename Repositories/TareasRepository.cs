@@ -77,6 +77,32 @@ public class TareasRepository : ITareasRepository{
         }
         return tarea;
     }
+    public List<Tareas> ListarTareas(){
+        var tareas = new List<Tareas>();
+        string QueryString = @"SELECT * FROM tarea;";
+        using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
+            connection.Open();
+            SqliteCommand command = new SqliteCommand(QueryString, connection);
+            using(SqliteDataReader reader = command.ExecuteReader()){
+                while(reader.Read()){
+                    Tareas tarea = new Tareas();
+                    tarea.id = Convert.ToInt32(reader["id"]);
+                    tarea.idTablero = Convert.ToInt32(reader["id_tablero"]);
+                    var nombre = reader["nombre"].ToString();
+                    if(nombre != null){
+                        tarea.nombre = nombre;
+                    }
+                    tarea.estado = (Tareas.EstadoTarea)Convert.ToInt32(reader["estado"]);
+                    tarea.descripcion = reader["descripcion"].ToString();
+                    tarea.color = reader["color"].ToString();
+                    tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    tareas.Add(tarea);
+                }
+            }
+            connection.Close();
+        }
+        return tareas;
+    }
     public List<Tareas> ListarTareasDeUsuario(int idUsuario){
         List<Tareas> listaDeTareas = new List<Tareas>();
         string QueryString = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @idUsuario;";

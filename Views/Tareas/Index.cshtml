@@ -1,33 +1,76 @@
 @model List<ListarTareasVM>
 
-<h1>Lista de Tareas Asignadas</h1>
-@if(Model.Count>0){
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Estado</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var tarea in Model){
-                <div style="background-color: @tarea.color;">
+@{
+    var EsAdmin = ViewData["EsAdmin"];
+}
+@if(EsAdmin != null && (bool)EsAdmin){
+    <h1>Lista de Tareas</h1>
+    @if(Model.Count>0){
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>@tarea.id</td>
-                    <td>@tarea.nombre</td>
-                    <td>@tarea.descripcion</td>
-                    <td>@tarea.estado</td>
-                    <td>
-                        <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
-                    </td>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Color</th>
+                    <th>Acción</th>
                 </tr>
-                </div>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach(var tarea in Model){
+                    <tr>
+                        <td>@tarea.id</td>
+                        <td>@tarea.nombre</td>
+                        <td>@tarea.descripcion</td>
+                        <td>@tarea.estado</td>
+                        <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
+                        <td>
+                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
+                            @if(tarea.idUsuarioAsignado == null){ <!-- Si la tarea no esta asignada a ningun usuario, el boton dice "Asignar", caso contrario dice "Reasignar". -->
+                                <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Asignar Usuario</a>
+                            }else{
+                                <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Resignar Usuario</a>
+                            }
+                            <a asp-controller="Tareas" asp-action="EliminarTarea" asp-route-id="@tarea.id" class="btn btn-danger">Borrar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }else{
+        <h2 class="text-center text-muted">SIN TAREAS</h2>
+    }
 }else{
-    <h2 class="text-center text-muted">SIN TAREAS</h2>
+    <h1>Lista de Tareas Asignadas</h1>
+    @if(Model.Count>0){
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Color</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var tarea in Model){
+                    <tr>
+                        <td>@tarea.id</td>
+                        <td>@tarea.nombre</td>
+                        <td>@tarea.descripcion</td>
+                        <td>@tarea.estado</td>
+                        <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
+                        <td>
+                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }else{
+        <h2 class="text-center text-muted">SIN TAREAS</h2>
+    }
 }

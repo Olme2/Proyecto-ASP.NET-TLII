@@ -12,10 +12,18 @@ public class TareasController : Controller{
     }
     public IActionResult Index(){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        var EsAdmin = HttpContext.Session.GetString("Rol") == "Administrador"; 
+        ViewData["EsAdmin"] = EsAdmin;
         HttpContext.Session.SetString("origen", "Tareas");
-        var id = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
-        var tareas = repositorioTareas.ListarTareasDeUsuario(id);
-        var tareasVM = tareas.Select(t => new ListarTareasVM(t)).ToList();
+        var tareas = new List<Tareas>();
+        if(EsAdmin){
+            tareas = repositorioTareas.ListarTareas();
+        }else{
+            var id = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
+            tareas = repositorioTareas.ListarTareasDeUsuario(id);
+        }
+        var tareasVM = new List<ListarTareasVM>();
+        tareasVM = tareas.Select(t => new ListarTareasVM(t)).ToList();
         return View(tareasVM);
     }
     [HttpGet]
@@ -27,6 +35,7 @@ public class TareasController : Controller{
     [HttpPost]
     public IActionResult CrearTarea(CrearTareaVM tareaVM){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        if(!ModelState.IsValid) RedirectToAction("AltaTarea");
         var tarea = new Tareas(tareaVM);
         repositorioTareas.CrearTarea(tarea.idTablero, tarea);
         return RedirectToAction("Index", "Tablero");
@@ -53,6 +62,7 @@ public class TareasController : Controller{
     [HttpGet]
     public IActionResult AsignarUsuario(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        TempData["PreviousUrl"] = Request.Headers["Referer"].ToString();
         var tarea = repositorioTareas.ObtenerDetallesDeTarea(id);
         var model = new AsignarUsuarioVM(tarea);
         model.listaDeUsuarios = repositorioUsuarios.ListarUsuarios();
@@ -61,24 +71,31 @@ public class TareasController : Controller{
     [HttpPost]
     public IActionResult Asignar(AsignarUsuarioVM model){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+        string? origen = HttpContext.Session.GetString("origen");
         var tarea = new Tareas(model);
         repositorioTareas.AsignarUsuarioATarea(tarea.idUsuarioAsignado, tarea.id);
-        return RedirectToAction("VerTablero", "Tablero", new {id= tarea.idTablero});
+        if(origen == "Tablero"){
+            return RedirectToAction("VerTablero", "Tablero", new {id = model.idTablero});
+        }
+        return RedirectToAction("Index");
     }
     [HttpGet]
     public IActionResult EliminarTarea(int id){
         if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
         TempData["PreviousUrl"] = Request.Headers["Referer"].ToString();
-        ViewData["idTablero"] = repositorioTareas.ObtenerDetallesDeTarea(id).idTablero;
-        return View(id);
+        var tarea = repositorioTareas.ObtenerDetallesDeTarea(id);
+        var tareaVM = new EliminarTareaVM(tarea);
+        return View(tareaVM);
     }
-    [HttpGet]
-    public IActionResult Eliminar(int id){
-        if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+    [HttpPost]
+    public IActionResult Eliminar(EliminarTareaVM tareaVM){
+        if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction("Index", "Login");
+        if(!ModelState.IsValid) return RedirectToAction("EliminarTarea", tareaVM.id);
         string? origen = HttpContext.Session.GetString("origen");
-        repositorioTareas.EliminarTarea(id);
+        var tarea = new Tareas(tareaVM);
+        repositorioTareas.EliminarTarea(tarea.id);
         if(origen == "Tablero"){
-            return RedirectToAction("VerTablero", "Tablero", new {id = Convert.ToInt32(TempData["idTablero"])});
+            return RedirectToAction("VerTablero", "Tablero", tarea.idTablero);
         }
         return RedirectToAction("Index");
     }
