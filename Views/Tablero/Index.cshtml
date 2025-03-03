@@ -1,8 +1,8 @@
 @model List<ListarTablerosVM>
 @{
-    var tablerosUsuario = ViewData["tablerosUsuario"] as List<ListarTablerosVM>; <!-- Tableros creados por el usuario. -->
-    var esAdmin = ViewData["EsAdmin"]; <!-- ViewData para ver si el usuario es admin. -->
-    var errorMessage = TempData["ErrorMessage"]; <!-- Mensaje de error que puede venir de un acceso erroneo a otros metodos relacionados con el controller. -->
+    var tablerosUsuario = ViewData["tablerosUsuario"] as List<ListarTablerosVM>; //Tableros creados por el usuario.
+    var esAdmin = ViewData["EsAdmin"]; //ViewData para ver si el usuario es admin.
+    var errorMessage = TempData["ErrorMessage"]; //Mensaje de error que puede venir de un acceso erroneo a otros metodos relacionados con el controller.
 }
 @if (errorMessage!=null)
 {
@@ -15,7 +15,7 @@
     </script>
 }
 <h1>Lista de Tableros</h1>
-@if(esAdmin!=null && (bool)esAdmin){ <!-- Distincion de admin, si no es admin se muestran los tableros propios y con tareas asignadas nada mas, sino muestra todos los tableros. -->
+@if(esAdmin!=null && (bool)esAdmin){ <!-- Distinción de admin, si no es admin se muestran los tableros propios y con tareas asignadas nada mas, sino muestra todos los tableros. -->
     @if(Model != null && Model.Count>0){ <!-- Verificamos que hayan tableros en el model, caso contrario se muestra un mensaje de que no hay. -->
         <table class="table table-bordered">
             <thead>
@@ -36,7 +36,6 @@
                                 <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es admin en este caso, puede acceder a todas las funciones. -->
                                 <a asp-action="EliminarTablero" asp-route-id="@tablero.id" class="btn btn-danger">Borrar</a>
                                 <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a>
-                                <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@tablero.id" class="btn btn-primary">Crear Tarea</a>
                             </td>
                         </tr>
                 }

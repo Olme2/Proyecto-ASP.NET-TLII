@@ -18,11 +18,9 @@ public class CambiarPasswordVM{
     }
     public int id {get => Id; set => Id = value;}
     public string nombreDeUsuario {get => NombreDeUsuario; set => NombreDeUsuario = value;}
-    [Required]
-    [DataType(DataType.Password)]
+    [Required(ErrorMessage = "Contraseña obligatoria.")] //Validacion en backend para la obligatoriedad de la contraseña.
     public string password {get => Password; set => Password = value;}
-    [Required]
-    [DataType(DataType.Password)]
-    [Compare("password", ErrorMessage = "Las contraseñas no coinciden. Inténtelo de nuevo.")]
+    [Required(ErrorMessage = "Repita su contraseña por favor.")] //Validacion en backend para la obligatoriedad de la contraseña repetida.
+    [Compare("password", ErrorMessage = "Las contraseñas no coinciden. Inténtelo de nuevo.")] //Validacion en backend para la obligatoriedad de la coincidencia entre contraseña y contraseña repetida.
     public string confirmarPassword {get => ConfirmarPassword; set => ConfirmarPassword = value;}
 }

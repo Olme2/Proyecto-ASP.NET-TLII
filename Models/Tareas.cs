@@ -9,8 +9,6 @@ public class Tareas{
     private int? IdUsuarioAsignado;
     public Tareas(){
         Nombre = string.Empty;
-        Descripcion = string.Empty;
-        Color = string.Empty;
     }
     public Tareas(CrearTareaVM tareaVM){
         IdTablero = tareaVM.idTablero;
@@ -38,8 +36,6 @@ public class Tareas{
         Id = model.idTarea;
         IdTablero = model.idTablero;
         Nombre = string.Empty;
-        Descripcion = string.Empty;
-        Color = string.Empty;
         IdUsuarioAsignado = model.idUsuario;
     }
     public Tareas(EliminarTareaVM tareaVM){

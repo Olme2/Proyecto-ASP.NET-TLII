@@ -1,14 +1,26 @@
 @model List<ListarUsuariosVM>
 
+@{
+    var EsAdmin = ViewData["EsAdmin"]; //Variable para ver si el usuario es admin, en ese caso se muestran las acciones crear, modificar y eliminar.
+    var errorMessage = TempData["ErrorMessage"] as string; //Mensaje de error para accesos denegados.
+}
+
+@if (errorMessage!=null){
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">@errorMessage</div>
+
+    <script>
+        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
+    </script>
+}
+
 <h1>Lista de Usuarios</h1>
-@if(Model.Count>0){
+@if(Model.Count>0){ <!-- Verificamos que el modelo tenga usuarios, caso contrario se muestra cartel de "Sin usuarios". -->
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Usuario</th>
-                @if ((bool)ViewData["EsAdmin"])
-                {
+                @if(EsAdmin!=null && (bool)EsAdmin){  <!-- Verificamos que el usuario sea admin, para mostrar o no la columna "Acción". -->
                     <th>Acción</th>
                 }
             </tr>
@@ -18,7 +30,7 @@
                 <tr>
                     <td>@usuario.id</td>
                     <td>@usuario.nombreDeUsuario</td>
-                    @if((bool)ViewData["EsAdmin"]){
+                    @if(EsAdmin!=null && (bool)EsAdmin){ <!-- Verificamos que el usuario sea admin, para mostrar o no las acciones "Modificar" y "Borrar". -->
                         <td>
                             <a asp-controller="Usuarios" asp-action="ModificarUsuario" asp-route-id="@usuario.id" class="btn btn-secondary">Modificar</a>
                             <a asp-controller="Usuarios" asp-action="EliminarUsuario" asp-route-id="@usuario.id" class="btn btn-danger">Borrar</a>
@@ -31,7 +43,7 @@
 }else{
     <h2 class="text-center text-muted">SIN USUARIOS</h2>
 }
-@if((bool)ViewData["EsAdmin"]){
+@if(EsAdmin!=null && (bool)EsAdmin){ <!-- Verificamos que el usuario sea admin, para mostrar o no la acción "Agregar Usuario". -->
     <div class="text-center">
         <a asp-action="AltaUsuario" class="btn btn-primary">Agregar Usuario</a>
     </div>

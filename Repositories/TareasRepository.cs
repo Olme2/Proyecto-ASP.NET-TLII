@@ -5,7 +5,7 @@ public class TareasRepository : ITareasRepository{
     public TareasRepository(string cadenaDeConexion){
         ConnectionString = cadenaDeConexion;
     }
-    public void CrearTarea(int idTablero, Tareas tarea){
+    public void CrearTarea(int idTablero, Tareas tarea){ //Método para crear una nueva tarea.
         string QueryString = @"INSERT INTO Tarea (id_tablero, nombre, estado, descripcion, color) VALUES(@idTablero, @nombre, @estado, @descripcion, @color);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
@@ -13,7 +13,7 @@ public class TareasRepository : ITareasRepository{
             command.Parameters.AddWithValue("@idTablero", idTablero);
             command.Parameters.AddWithValue("@nombre", tarea.nombre);
             command.Parameters.AddWithValue("@estado", tarea.estado);
-            if(tarea.descripcion!=null){
+            if(tarea.descripcion!=null){ //Se verifica si la descripcion es nula o no en la BD, ya que puede serlo.
                 command.Parameters.AddWithValue("@descripcion", tarea.descripcion);
             }else{
                 command.Parameters.AddWithValue("@descripcion", DBNull.Value);
@@ -23,7 +23,7 @@ public class TareasRepository : ITareasRepository{
             connection.Close();
         }
     }
-    public void ModificarTarea(int id, Tareas tarea){
+    public void ModificarTarea(int id, Tareas tarea){ //Método para modificar una determinada tarea.
         string QueryString = @"UPDATE Tarea SET id_tablero = @idTablero, nombre = @nombre, estado = @estado, descripcion = @descripcion, color = @color WHERE id = @id;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
@@ -32,17 +32,21 @@ public class TareasRepository : ITareasRepository{
             command.Parameters.AddWithValue("@idTablero", tarea.idTablero);
             command.Parameters.AddWithValue("@nombre", tarea.nombre);
             command.Parameters.AddWithValue("@estado", tarea.estado);
-            if(tarea.descripcion!=null){
+            if(tarea.descripcion!=null){ //Se verifica si la descripcion es nula o no para mandarlo a la BD, ya que puede serlo.
                 command.Parameters.AddWithValue("@descripcion", tarea.descripcion);
             }else{
                 command.Parameters.AddWithValue("@descripcion", DBNull.Value);
             }
-            command.Parameters.AddWithValue("@color", tarea.color);
+            if(tarea.color!=null){ //Se verifica si el color es nulo o no para mandarlo a la BD, ya que puede serlo.
+                command.Parameters.AddWithValue("@color", tarea.color);
+            }else{
+                command.Parameters.AddWithValue("@color", DBNull.Value);
+            }
             command.ExecuteNonQuery();
             connection.Close();
         }
     }
-    public Tareas ObtenerDetallesDeTarea(int id){
+    public Tareas ObtenerDetallesDeTarea(int id){ //Método para obtener los detalles de una determinada tarea.
         Tareas tarea = new Tareas();
         string QueryString = @"SELECT id_tablero, nombre, estado, descripcion, color, id_usuario_asignado FROM Tarea WHERE id = @id";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
@@ -54,19 +58,13 @@ public class TareasRepository : ITareasRepository{
                     tarea.id = id;
                     tarea.idTablero = Convert.ToInt32(reader["id_tablero"]);
                     var nombre = reader["nombre"].ToString();
-                    if(nombre != null){
+                    if(nombre != null){ //El nombre no puede ser nulo, pero igual lo verifico para que no salte error.
                         tarea.nombre = nombre;
                     }
                     tarea.estado = (Tareas.EstadoTarea)Convert.ToInt32(reader["estado"]);
-                    var descripcion = reader["descripcion"].ToString();
-                    if(descripcion != null){
-                        tarea.descripcion = descripcion;
-                    }
-                    var color = reader["color"].ToString();
-                    if(color != null){
-                        tarea.color = color;
-                    }
-                    if(reader["id_usuario_asignado"] != DBNull.Value){
+                    tarea.descripcion = reader["descripcion"].ToString();
+                    tarea.color = reader["color"].ToString();
+                    if(reader["id_usuario_asignado"] != DBNull.Value){ //Se verifica si el id del usuario asignado es nulo o no en la BD, ya que puede serlo.
                         tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
                     }else{
                         tarea.idUsuarioAsignado = null;
@@ -77,7 +75,7 @@ public class TareasRepository : ITareasRepository{
         }
         return tarea;
     }
-    public List<Tareas> ListarTareas(){
+    public List<Tareas> ListarTareas(){ //Método para listar todas las tareas.
         var tareas = new List<Tareas>();
         string QueryString = @"SELECT * FROM tarea;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
@@ -89,13 +87,17 @@ public class TareasRepository : ITareasRepository{
                     tarea.id = Convert.ToInt32(reader["id"]);
                     tarea.idTablero = Convert.ToInt32(reader["id_tablero"]);
                     var nombre = reader["nombre"].ToString();
-                    if(nombre != null){
+                    if(nombre != null){ //El nombre no puede ser nulo, pero igual lo verifico para que no salte error.
                         tarea.nombre = nombre;
                     }
                     tarea.estado = (Tareas.EstadoTarea)Convert.ToInt32(reader["estado"]);
                     tarea.descripcion = reader["descripcion"].ToString();
                     tarea.color = reader["color"].ToString();
-                    tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    if(reader["id_usuario_asignado"] != DBNull.Value){ //Se verifica si el id del usuario asignado es nulo o no en la BD, ya que puede serlo.
+                        tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    }else{
+                        tarea.idUsuarioAsignado = null;
+                    }
                     tareas.Add(tarea);
                 }
             }
@@ -103,7 +105,7 @@ public class TareasRepository : ITareasRepository{
         }
         return tareas;
     }
-    public List<Tareas> ListarTareasDeUsuario(int idUsuario){
+    public List<Tareas> ListarTareasDeUsuario(int idUsuario){ //Método para listar solo las tareas asignadas a un determinado usuario.
         List<Tareas> listaDeTareas = new List<Tareas>();
         string QueryString = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @idUsuario;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
@@ -116,19 +118,13 @@ public class TareasRepository : ITareasRepository{
                     tarea.id = Convert.ToInt32(reader["id"]);
                     tarea.idTablero = Convert.ToInt32(reader["id_tablero"]);
                     var nombre = reader["nombre"].ToString();
-                    if(nombre != null){
+                    if(nombre != null){ //El nombre no puede ser nulo, pero igual lo verifico para que no salte error.
                         tarea.nombre = nombre;
                     }
                     tarea.estado = (Tareas.EstadoTarea)Convert.ToInt32(reader["estado"]);
-                    var descripcion = reader["descripcion"].ToString();
-                    if(descripcion != null){
-                        tarea.descripcion = descripcion;
-                    }
-                    var color = reader["color"].ToString();
-                    if(color != null){
-                        tarea.color = color;
-                    }
-                    tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                    tarea.descripcion = reader["descripcion"].ToString();
+                    tarea.color = reader["color"].ToString();
+                    tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]); //En este caso se que el id de usuario asignado no es nulo, ya que estoy buscando tareas de un determinado usuario.
                     listaDeTareas.Add(tarea);
                 }
             }
@@ -136,7 +132,7 @@ public class TareasRepository : ITareasRepository{
         }
         return listaDeTareas;
     }
-    public List<Tareas> ListarTareasDeTablero(int idTablero){
+    public List<Tareas> ListarTareasDeTablero(int idTablero){ //Método para solo las tareas pertenecientes a un determinado tablero
         List<Tareas> listaDeTareas = new List<Tareas>();
         string QueryString = @"SELECT * FROM Tarea WHERE id_tablero = @idTablero;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
@@ -149,19 +145,13 @@ public class TareasRepository : ITareasRepository{
                     tarea.id = Convert.ToInt32(reader["id"]);
                     tarea.idTablero = Convert.ToInt32(reader["id_tablero"]);
                     var nombre = reader["nombre"].ToString();
-                    if(nombre != null){
+                    if(nombre != null){ //El nombre no puede ser nulo, pero igual lo verifico para que no salte error.
                         tarea.nombre = nombre;
                     }
                     tarea.estado = (Tareas.EstadoTarea)Convert.ToInt32(reader["estado"]);
-                    var descripcion = reader["descripcion"].ToString();
-                    if(descripcion != null){
-                        tarea.descripcion = descripcion;
-                    }
-                    var color = reader["color"].ToString();
-                    if(color != null){
-                        tarea.color = color;
-                    }
-                    if(reader["id_usuario_asignado"] != DBNull.Value){
+                    tarea.descripcion = reader["descripcion"].ToString();
+                    tarea.color = reader["color"].ToString();;
+                    if(reader["id_usuario_asignado"] != DBNull.Value){ //Se verifica si el id del usuario asignado es nulo o no en la BD, ya que puede serlo.
                         tarea.idUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
                     }else{
                         tarea.idUsuarioAsignado = null;
@@ -173,12 +163,12 @@ public class TareasRepository : ITareasRepository{
         }
         return listaDeTareas;
     }
-    public void AsignarUsuarioATarea(int? idUsuario, int idTarea){
+    public void AsignarUsuarioATarea(int? idUsuario, int idTarea){ //Método para asignar un usuario a una tarea. Puede no recibir ningun usuario y se asignara nulo.
         string QueryString = @"UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id = @idTarea;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
             SqliteCommand command = new SqliteCommand(QueryString, connection);
-            if(idUsuario!=-1){
+            if(idUsuario!=-1){ //Se verifica si el id del usuario asignado es nulo o no para mandarlo a la BD, ya que puede serlo.
                 command.Parameters.AddWithValue("@idUsuario", idUsuario);
             }else{
                 command.Parameters.AddWithValue("@idUsuario", DBNull.Value);
@@ -188,7 +178,7 @@ public class TareasRepository : ITareasRepository{
             connection.Close();
         }
     }
-    public void EliminarTarea(int idTarea){
+    public void EliminarTarea(int idTarea){ //Método para eliminar una determinada tarea.
         string QueryString = @"DELETE FROM Tarea WHERE id = @idTarea;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();

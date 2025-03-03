@@ -18,9 +18,9 @@ public class ModificarTableroVM{
         Descripcion = tablero.descripcion;
         ListaDeUsuarios = listaDeUsuarios;
     }
-    [Required(ErrorMessage = "Id de tablero obligatorio.")] //Validacion en backend para la obligatoriedad del ID del tablero.
+    [Required(ErrorMessage = "ID de tablero obligatorio.")] //Validacion en backend para la obligatoriedad del ID del tablero.
     public int id {get => Id; set => Id = value;}
-    [Required(ErrorMessage = "Id de usuario propietario obligatorio.")] //Validacion en backend para la obligatoriedad del ID del usuario propietario.
+    [Required(ErrorMessage = "ID de usuario propietario obligatorio.")] //Validacion en backend para la obligatoriedad del ID del usuario propietario.
     public int idUsuarioPropietario {get => IdUsuarioPropietario; set => IdUsuarioPropietario = value;}
     [Required(ErrorMessage = "Nombre de tablero obligatorio.")] //Validacion en backend para la obligatoriedad del nombre del tablero.
     public string nombre {get => Nombre; set => Nombre = value;}

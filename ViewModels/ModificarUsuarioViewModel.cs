@@ -15,8 +15,12 @@ public class ModificarUsuarioVM{
         Password = usuario.password;
         RolUsuario = usuario.rolUsuario;
     }
+    [Required(ErrorMessage = "ID de usuario obligatorio.")] //Validacion en backend para la obligatoriedad del ID del usuario.
     public int id {get => Id; set => Id = value;}
+    [Required(ErrorMessage = "Nombre de usuario obligatorio.")] //Validacion en backend para la obligatoriedad del nombre del usuario.
     public string nombreDeUsuario {get => NombreDeUsuario; set => NombreDeUsuario = value;}
+    [Required(ErrorMessage = "Contraseña de usuario obligatoria.")] //Validacion en backend para la obligatoriedad de la contraseña.
     public string password {get => Password; set => Password = value;}
+    [Required(ErrorMessage = "Rol de usuario obligatorio.")] //Validacion en backend para la obligatoriedad del rol del usuario.
     public Usuarios.Rol rolUsuario {get => RolUsuario; set => RolUsuario = value;}
 }

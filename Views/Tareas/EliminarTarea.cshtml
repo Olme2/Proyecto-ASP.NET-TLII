@@ -1,6 +1,6 @@
 @model EliminarTareaVM
 @{
-    string? previousUrl = TempData["PreviousUrl"] as string;
+    string? previousUrl = TempData["PreviousUrl"] as string; //Se guarda la url anterior por si el usuario viene desde VerTablero(), para ponerselo al link de cancelar.
 }
 
 <div class="container mt-4">
@@ -9,16 +9,20 @@
     </div>
     <h3 class="text-center">¿Desea eliminar la tarea?</h3>
     <div class="text-center">
-        <form asp-action="Eliminar" method="post">
-            <input type="hidden" asp-for="@Model.id"/>
-            <span asp-validation-for="id" class="text-danger"></span>
+        <form asp-action="Eliminar" method="post"> <!-- Formulario para eliminar la tarea. -->
+            <input type="hidden" asp-for="id" value="@Model.id"/>
+            <span asp-validation-for="id" class="text-danger"></span> <!-- Validación para ID de tarea. -->
+            <input type="hidden" asp-for="idTablero" value="@Model.idTablero">
+            <span asp-validation-for="idTablero" class="text-danger"></span> <!-- Validación para ID de tablero. -->
+            <input type="hidden" asp-for="nombre" value="@Model.nombre"/>
+            <span asp-validation-for="nombre" class="text-danger"></span> <!-- Validación para nombre de tarea. -->
             <button type="submit" class="btn btn-danger">Eliminar</button>
+            @if (!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){ //Verificamos que la url anterior no este vacía para asignarle al boton de Cancelar la dirección a VerTablero() con su respectivo ID.
+                <a asp-controller="Tablero" asp-action="VerTablero" asp-route-id="@Model.idTablero" class="btn btn-primary">Cancelar</a>
+            }else{
+                <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+            }
         </form>
-        @if (!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){
-            <a asp-controller="Tablero" asp-action="VerTablero" asp-route-id="@Model.idTablero" class="btn btn-primary">Cancelar</a>
-        }else{
-            <a asp-action="Index" class="btn btn-primary">Cancelar</a>
-        }
     </div>
 </div>
 

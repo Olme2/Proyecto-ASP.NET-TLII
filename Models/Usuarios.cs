@@ -30,6 +30,11 @@ public class Usuarios{
         NombreDeUsuario = usuarioVM.nombreDeUsuario;
         Password = usuarioVM.password;
     }
+    public Usuarios(EliminarUsuarioVM usuarioVM){
+        Id = usuarioVM.id;
+        NombreDeUsuario = usuarioVM.nombreDeUsuario;
+        Password = string.Empty;
+    }
     public int id {get => Id; set => Id = value;}
     public string nombreDeUsuario {get => NombreDeUsuario; set => NombreDeUsuario = value;}
     public string password {get => Password; set => Password = value;}

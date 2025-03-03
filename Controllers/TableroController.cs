@@ -29,6 +29,7 @@ public class TableroController : Controller{
             var tablerosUsuarioVM = tablerosUsuario.Select(t => new ListarTablerosVM(t)).ToList();
             ViewData["tablerosUsuario"] = tablerosUsuarioVM; //Se envia por ViewData ya que los otros tableros los mandamos por vista.
         }
+        ViewData["IDUSUARIO"] = HttpContext.Session.GetInt32("Id");
         return View(tablerosVM);
     }    
     public IActionResult VerTablero(int id){ //Vista detallada de un tablero en especifico. Si es admin puede acceder, sino solo se accede si sos dueño o tenes tareas asignadas.

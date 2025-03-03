@@ -1,6 +1,6 @@
 @model EliminarTableroVM
 @{
-    var errorMessage = ViewData["ErrorMessage"] as string; <!-- Mensaje de error por si el tablero tiene tareas asignadas. -->
+    var errorMessage = ViewData["ErrorMessage"] as string; //Mensaje de error por si el tablero tiene tareas asignadas.
 }
 
 @if(errorMessage != null && errorMessage.Length > 0) {
@@ -17,9 +17,9 @@
         <div class="text-center">
             <form asp-action="Eliminar" method="post"> <!-- Formulario para eliminar el tablero. -->
                 <input type="hidden" asp-for="nombre" value="@Model.nombre">
-                <span asp-validation-for="nombre" class="text-danger"></span> <!-- Validacion para nombre. -->
+                <span asp-validation-for="nombre" class="text-danger"></span> <!-- Validación para nombre. -->
                 <input type="hidden" asp-for="id" value="@Model.id"/>
-                <span asp-validation-for="id" class="text-danger"></span> <!-- Validacion para id. -->
+                <span asp-validation-for="id" class="text-danger"></span> <!-- Validación para ID. -->
                 <button type="submit" class="btn btn-danger">Eliminar</button>
                 <a asp-action="Index" class="btn btn-primary">Cancelar</a>
             </form>

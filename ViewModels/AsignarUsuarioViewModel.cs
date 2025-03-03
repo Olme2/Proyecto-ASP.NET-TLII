@@ -17,12 +17,12 @@ public class AsignarUsuarioVM{
         Nombre = tarea.nombre;
         ListaDeUsuarios = listaDeUsuarios;
     }
-    [Required(ErrorMessage = "ID de tarea obligatorio.")]
+    [Required(ErrorMessage = "ID de tarea obligatorio.")] //Validacion en backend para la obligatoriedad del ID de la tarea.
     public int idTarea {get => IdTarea; set => IdTarea = value;}
-    [Required(ErrorMessage = "ID de tablero obligatorio.")]
+    [Required(ErrorMessage = "ID de tablero obligatorio.")] //Validacion en backend para la obligatoriedad del ID del tablero.
     public int idTablero {get => IdTablero; set => IdTablero = value;}
-    public int? idUsuario {get => IdUsuario; set => IdUsuario = value;}
-    [Required(ErrorMessage = "Nombre de tarea obligatorio.")]
+    public int? idUsuario {get => IdUsuario; set => IdUsuario = value;} 
+    [Required(ErrorMessage = "Nombre de tarea obligatorio.")] //Validacion en backend para la obligatoriedad del nombre de la tarea.
     public string nombre {get => Nombre; set => Nombre = value;}
     public List<ListarUsuariosVM> listaDeUsuarios {get => ListaDeUsuarios; set => ListaDeUsuarios = value;}
 }

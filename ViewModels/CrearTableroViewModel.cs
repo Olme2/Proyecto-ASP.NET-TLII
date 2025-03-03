@@ -13,7 +13,7 @@ public class CrearTableroVM{
         Nombre = string.Empty;
         Descripcion = string.Empty;
     }
-    [Required(ErrorMessage = "Id de usuario propietario obligatorio.")] //Validacion en backend para la obligatoriedad del ID del usuario propietario.
+    [Required(ErrorMessage = "ID de usuario propietario obligatorio.")] //Validacion en backend para la obligatoriedad del ID del usuario propietario.
     public int idUsuarioPropietario {get => IdUsuarioPropietario; set => IdUsuarioPropietario = value;}
     [Required(ErrorMessage = "Nombre del tablero obligatorio.")] //Validacion en backend para la obligatoriedad del nombre del tablero.
     public string nombre {get => Nombre; set => Nombre = value;}

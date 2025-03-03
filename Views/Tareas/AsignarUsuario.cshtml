@@ -1,19 +1,21 @@
 @model AsignarUsuarioVM
 
 @{
-    var previousUrl = TempData["PreviousUrl"] as string;
+    var previousUrl = TempData["PreviousUrl"] as string; //Se guarda la url anterior por si el usuario viene desde VerTablero(), para ponerselo al link de cancelar.
 }
 
 <h3 class="text-center">Asignar Usuario a Tarea "@Model.nombre"</h3>
-<form asp-action="Asignar" method="post" class="form">
+<form asp-action="Asignar" method="post" class="form"> <!-- Formulario para Asignar/Reasignar usuario. -->
     <input type="hidden" asp-for="idTarea" value="@Model.idTarea">
-    <span asp-validation-for="idTarea" class="text-danger"></span>
+    <span asp-validation-for="idTarea" class="text-danger"></span> <!-- Validación para ID de tarea. -->
     <input type="hidden" asp-for="idTablero" value="@Model.idTablero">
-    <span asp-validation-for="idTablero" class="text-danger"></span>
+    <span asp-validation-for="idTablero" class="text-danger"></span> <!-- Validación para ID de tablero. -->
+    <input type="hidden" asp-for="nombre" value="@Model.nombre">
+    <span asp-validation-for="nombre" class="text-danger"></span> <!-- Validación para nombre de tarea. -->
     <div class="form-group">        
             <label asp-for="idUsuario" class="form-label">Usuario Asignado</label>
             <select asp-for="idUsuario" class="form-select" value="@Model.idUsuario">
-                <option value="-1">Ningun Usuario</option>
+                <option value="-1">Ningún Usuario</option>
                 @foreach (var usuario in @Model.listaDeUsuarios)
                 {
                     <option value="@usuario.id">@usuario.nombreDeUsuario</option>
@@ -21,12 +23,12 @@
             </select>
     </div>
     <div class=" mt-3">
-        @if(Model.idUsuario == -1){
+        @if(Model.idUsuario == null){ //Detalle estético, verificamos si tiene ya un usuario asignado o no, para que el botón diga Asignar o Reasignar.
             <button type="submit" class="btn btn-primary">Asignar</button>
         }else{
             <button type="submit" class="btn btn-primary">Reasignar</button>
         }
-        @if(!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){
+        @if(!string.IsNullOrEmpty(previousUrl) && previousUrl.Contains("Tablero/VerTablero")){ //Verificamos que la url anterior no este vacía para asignarle al boton de Cancelar la dirección a VerTablero() con su respectivo ID.
             <a asp-controller="Tablero" asp-action="VerTablero" asp-route-id="@Model.idTablero" class="btn btn-secondary">Cancelar</a>
         }else{
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>

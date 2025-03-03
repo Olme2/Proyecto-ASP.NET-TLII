@@ -1,5 +1,20 @@
 @model VerTableroVM
 
+@{
+    var errorMessage = TempData["ErrorMessage"]; //Mensaje de error para accesos denegados.
+}
+
+@if (errorMessage!=null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errorMessage
+    </div>
+
+    <script>
+        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
+    </script>
+}
+
 <h2>Tablero "@Model.nombre"</h2> 
 <hr>
 <h3>Propietario</h3>
@@ -56,6 +71,8 @@
     }else{
         <h2 class="text-center text-muted">Sin Tareas</h2>
     }
-    <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@Model.id" class="btn btn-primary">Crear Tarea</a>
+    @if(Model.esDueño){
+        <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@Model.id" class="btn btn-primary">Crear Tarea</a>
+    }
     <a asp-action="Index" class="btn btn-danger">Volver</a>
 </div>

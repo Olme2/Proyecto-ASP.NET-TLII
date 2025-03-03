@@ -5,7 +5,7 @@ public class UsuariosRepository : IUsuariosRepository{
     public UsuariosRepository(string CadenaDeConexion){
         ConnectionString = CadenaDeConexion;
     }
-    public void CrearUsuario(Usuarios usuario){
+    public void CrearUsuario(Usuarios usuario){ //Método para crear un nuevo usuario.
         string QueryString = @"INSERT INTO Usuario (nombre_de_usuario, password, rolusuario) VALUES (@nombre, @password, @rol);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
@@ -17,7 +17,7 @@ public class UsuariosRepository : IUsuariosRepository{
             connection.Close();
         }
     }
-    public void ModificarUsuario(int id, Usuarios usuario){
+    public void ModificarUsuario(int id, Usuarios usuario){ //Método para modificar un determinado usuario.
         string QueryString = @"UPDATE Usuario SET nombre_de_usuario = @nombre, password = @password, rolusuario = @rol WHERE id = @id;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
@@ -30,7 +30,7 @@ public class UsuariosRepository : IUsuariosRepository{
             connection.Close();
         }
     }
-    public Usuarios ObtenerDetallesDeUsuario(int id){
+    public Usuarios ObtenerDetallesDeUsuario(int id){ //Método para obtener detalles de un determinado usuario.
         Usuarios usuario = new Usuarios();
         string QueryString = @"SELECT nombre_de_usuario, password, rolusuario FROM Usuario WHERE id = @id;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
@@ -42,10 +42,10 @@ public class UsuariosRepository : IUsuariosRepository{
                     usuario.id = id;
                     var nombreDeUsuario = reader["nombre_de_usuario"].ToString();
                     var password = reader["password"].ToString();
-                    if(nombreDeUsuario!=null){
+                    if(nombreDeUsuario!=null){ //El nombre no puede ser nulo, pero igual lo verifico para que no salte error.
                         usuario.nombreDeUsuario = nombreDeUsuario;
                     }
-                    if(password!=null){
+                    if(password!=null){ //La contraseña no puede ser nula, pero igual la verifico para que no salte error.
                         usuario.password = password;
                     }
                     usuario.rolUsuario = (Usuarios.Rol)Convert.ToInt32(reader["rolusuario"]);
@@ -55,7 +55,7 @@ public class UsuariosRepository : IUsuariosRepository{
         }
         return usuario;
     }
-    public Usuarios? ObtenerUsuarioPorNombreYPassword(string nombreDeUsuario, string password){
+    public Usuarios? ObtenerUsuarioPorNombreYPassword(string nombreDeUsuario, string password){//Método para obtener un usuario por inicio de sesion (usando nombre y contraseña).
         Usuarios? usuario = null;
         string QueryString = @"SELECT * FROM Usuario WHERE nombre_de_usuario = @nombreDeUsuario AND password = @password;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
@@ -76,7 +76,7 @@ public class UsuariosRepository : IUsuariosRepository{
         }
         return usuario;
     }
-    public List<Usuarios> ListarUsuarios(){
+    public List<Usuarios> ListarUsuarios(){ //Método para listar todos los usuarios.
         List<Usuarios> listaDeUsuarios = new List<Usuarios>();
         string QueryString = @"SELECT * FROM Usuario;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
@@ -88,10 +88,10 @@ public class UsuariosRepository : IUsuariosRepository{
                     usuario.id = Convert.ToInt32(reader["id"]);
                     var nombreDeUsuario = reader["nombre_de_usuario"].ToString();
                     var password = reader["password"].ToString();
-                    if(nombreDeUsuario!=null){
+                    if(nombreDeUsuario!=null){ //El nombre no puede ser nulo, pero igual lo verifico para que no salte error.
                         usuario.nombreDeUsuario = nombreDeUsuario;
                     }
-                    if(password!=null){
+                    if(password!=null){ //La contraseña no puede ser nula, pero igual la verifico para que no salte error.
                         usuario.password = password;
                     }
                     usuario.rolUsuario = (Usuarios.Rol)Convert.ToInt32(reader["rolusuario"]);
@@ -102,7 +102,7 @@ public class UsuariosRepository : IUsuariosRepository{
         }
         return listaDeUsuarios;
     }
-    public void CambiarPassword(int id, string password){
+    public void CambiarPassword(int id, string password){ //Método para cambiar la contraseña de un determinado usuario por una nueva.
         string QueryString = @"UPDATE Usuario SET password = @password WHERE id = @id;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
@@ -113,7 +113,7 @@ public class UsuariosRepository : IUsuariosRepository{
             connection.Close();
         }
     }
-    public void EliminarUsuarioPorId(int id){
+    public void EliminarUsuarioPorId(int id){ //Método para eliminar un determinado usuario.
         string QueryString = @"DELETE FROM Usuario WHERE id = @id AND id NOT IN (SELECT id_usuario_propietario FROM Tablero WHERE id_usuario_propietario = @id) AND id NOT IN (SELECT id_usuario_asignado FROM Tarea WHERE id_usuario_asignado = @id);";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();
@@ -123,8 +123,8 @@ public class UsuariosRepository : IUsuariosRepository{
             connection.Close();
         }
     }
-    public int BuscarIdPorNombreDeUsuario(string nombreDeUsuario){
-        int id = -1;
+    public int BuscarIdPorNombreDeUsuario(string nombreDeUsuario){ //Método para buscar el id de un usuario usando su nombre, ya que el nombre es único. Sirve para modificar la contraseña.
+        int id = -1; //Si no encuentra el id, devuelve -1.
         string QueryString = @"SELECT id FROM Usuario WHERE nombre_de_usuario = @nombreDeUsuario;";
         using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
             connection.Open();

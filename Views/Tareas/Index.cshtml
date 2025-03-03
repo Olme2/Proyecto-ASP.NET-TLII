@@ -1,8 +1,8 @@
 @model List<ListarTareasVM>
 
 @{
-    var EsAdmin = ViewData["EsAdmin"];
-    var errorMessage = TempData["ErrorMessage"] as string;
+    var EsAdmin = ViewData["EsAdmin"]; //Variable para saber si el usuario es Admin o no. De esto depende que tareas se mostraran.
+    var errorMessage = TempData["ErrorMessage"] as string; //Mensaje de error para accesos denegados.
 }
 
 @if (errorMessage!=null){
@@ -13,9 +13,9 @@
     </script>
 }
 
-@if(EsAdmin != null && (bool)EsAdmin){
+@if(EsAdmin != null && (bool)EsAdmin){ <!--Verificamos si el usuario es Admin, si lo es se muestran todas las tareas del sistema con todas las acciones, sino solo las asignadas al usuario. -->
     <h1>Lista de Tareas</h1>
-    @if(Model.Count>0){
+    @if(Model.Count>0){ <!-- Verificamos que el modelo tenga tareas, caso contrario se muestra un mensaje de "Sin tareas". -->
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -37,7 +37,7 @@
                         <td>@tarea.estado</td>
                         <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                         <td>
-                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
+                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es administrador tiene acceso a todas las funciones. -->
                             @if(tarea.idUsuarioAsignado == null){ <!-- Si la tarea no esta asignada a ningun usuario, el boton dice "Asignar", caso contrario dice "Reasignar". -->
                                 <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Asignar Usuario</a>
                             }else{
@@ -55,7 +55,7 @@
     }
 }else{
     <h1>Lista de Tareas Asignadas</h1>
-    @if(Model.Count>0){
+    @if(Model.Count>0){ <!-- Verificamos que el modelo tenga tareas, caso contrario se muestra un mensaje de "Sin tareas". -->
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -76,7 +76,7 @@
                         <td>@tarea.estado</td>
                         <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                         <td>
-                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
+                            <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario fue asignado para esta tarea, puede Modificar solo su estado. -->
                         </td>
                     </tr>
                 }
