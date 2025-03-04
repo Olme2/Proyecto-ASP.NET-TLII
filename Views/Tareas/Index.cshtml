@@ -65,7 +65,15 @@
 
                         <td>@tarea.id</td>
                         <td>@tarea.nombre</td>
-                        <td>@tarea.descripcion</td>
+                        @if(string.IsNullOrEmpty(tarea.descripcion)){
+
+                           <td>Sin Descripción.</td>
+
+                        }else{
+
+                           <td>@tarea.descripcion</td>
+
+                        }
                         <td>@tarea.estado</td>
                         <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                         <td>
@@ -132,7 +140,15 @@
 
                         <td>@tarea.id</td>
                         <td>@tarea.nombre</td>
-                        <td>@tarea.descripcion</td>
+                        @if(string.IsNullOrEmpty(tarea.descripcion)){
+
+                           <td>Sin Descripción.</td>
+
+                        }else{
+
+                           <td>@tarea.descripcion</td>
+
+                        }
                         <td>@tarea.estado</td>
                         <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                         <td>

@@ -242,7 +242,7 @@ public class TareasController : Controller{
             var tarea = new Tareas(model);
             repositorioTareas.AsignarUsuarioATarea(tarea.idUsuarioAsignado, tarea.id);
             
-            TempData["SuccessMessage"] = "¡Usuario asignado correctamente a la tarea \""+tarea.nombre+"\"!";
+            TempData["SuccessMessage"] = "¡Usuario asignado correctamente a la tarea \""+model.nombre+"\"!";
             //Verificamos de donde viene el usuario con una variable llamada "origen", ya que la tarea se puede asignar desde el index de tareas o desde VerTablero() en el controller de tablero.
             if(origen == "Tablero"){ 
                 return RedirectToAction("VerTablero", "Tablero", new {id = model.idTablero});

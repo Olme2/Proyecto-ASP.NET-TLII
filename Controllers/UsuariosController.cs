@@ -4,10 +4,16 @@ public class UsuariosController : Controller{
 
     private readonly ILogger<UsuariosController> _logger;
     private IUsuariosRepository repositorioUsuarios;
+    //Agregado para verificar si un usuario tiene tableros.
+    private ITableroRepository repositorioTablero;
+    //Agregado para verificar si un usuario tiene tareas asignadas.
+    private ITareasRepository repositorioTareas;
     
-    public UsuariosController(ILogger<UsuariosController> logger, IUsuariosRepository RepositorioUsuarios){
+    public UsuariosController(ILogger<UsuariosController> logger, IUsuariosRepository RepositorioUsuarios, ITableroRepository RepositorioTablero, ITareasRepository RepositorioTareas){
         _logger = logger;
         repositorioUsuarios = RepositorioUsuarios;
+        repositorioTablero = RepositorioTablero;
+        repositorioTareas = RepositorioTareas;
     }
     
     //Vista principal de usuarios. Si el usuario es admin muestra todas las acciones para hacerse (eliminar, crear o modificar), si no lo es solo muestra los usuarios.
@@ -134,6 +140,14 @@ public class UsuariosController : Controller{
             //Se verifica que el usuario sea admin, si no lo es se le niega el acceso.
             if(!esAdmin){ 
                 TempData["ErrorMessage"] = "Acceso Denegado";
+                return RedirectToAction("Index");
+            }
+            
+            var tablerosDeUsuario = repositorioTablero.ListarTablerosDeUsuario(id);
+            var tareasDeUsuario = repositorioTareas.ListarTareasDeUsuario(id);
+            //Se verifica que el usuario no tenga ningun tablero ni tarea asignada
+            if(tablerosDeUsuario.Count>0 || tareasDeUsuario.Count>0){
+                TempData["ErrorMessage"] = "No se puede eliminar un usuario que tenga tableros a su nombre o tareas designadas.";
                 return RedirectToAction("Index");
             }
 
