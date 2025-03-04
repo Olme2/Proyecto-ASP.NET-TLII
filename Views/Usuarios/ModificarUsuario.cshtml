@@ -17,14 +17,6 @@
 
     <div class="form-group">
 
-        <label asp-for="password">Contraseña</label>
-        <input asp-for="password" value="@Model.password" type="password" class="form-control">
-        <span asp-validation-for="password" class="text-danger"></span> <!-- Validación para contraseña. -->
-
-    </div>
-
-    <div class="form-group">
-
         <label asp-for="rolUsuario" class="form-label">Rol</label>
         <select asp-for="rolUsuario" class="form-select" value="@Model.rolUsuario">
 

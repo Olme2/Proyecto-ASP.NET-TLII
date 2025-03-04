@@ -5,8 +5,6 @@
     var errorMessage = TempData["ErrorMessage"]; 
     //Mensaje de sesion cerrada con exito.
     var successMessage = TempData["SuccessMessage"]; 
-    //Mensaje de cambio exitoso de contraseña
-    var mensaje = TempData["Mensaje"]; 
 
 }
 
@@ -58,27 +56,9 @@
         <div class="mt-3 d-flex justify-content-between">
         
             <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-            <!-- Si la contraseña es incorrecta se abre un link para cambiarla. -->
-            @if(@Model.error=="Contraseña incorrecta"){ 
-                <a asp-action="CambiarPassword" asp-route-id="@Model.id" class="text-decoration-none">¿Olvidó su contraseña?</a>
-            }
         
         </div>
         
-        <!-- Si se cambio correctamente la contraseña se muestra un mensaje -->
-        @if(mensaje!=null){ 
-        
-            <div class="alert alert-success mt-3" role="alert">@mensaje</div>
-        
-        }
-        
-        <!-- Muestra elimina mensaje de error de contraseña incorrecta o usuario inexistente-->
-        @if(!string.IsNullOrEmpty(Model.error)){  
-        
-            <div class="alert alert-danger mt-3" role="alert">@Model.error</div>
-        
-        }
-    
     </form>
 
 </div>

@@ -138,7 +138,7 @@ public class UsuariosRepository : IUsuariosRepository{
             connection.Close();
         
         }
-        
+
         return usuario;
     
     }
@@ -229,35 +229,4 @@ public class UsuariosRepository : IUsuariosRepository{
         }
     }
 
-    //Método para buscar el id de un usuario usando su nombre, ya que el nombre es único. Sirve para modificar la contraseña.
-    public int BuscarIdPorNombreDeUsuario(string nombreDeUsuario){ 
-        
-        //Si no encuentra el id, devuelve -1.
-        int id = -1; 
-        
-        string QueryString = @"SELECT id FROM Usuario WHERE nombre_de_usuario = @nombreDeUsuario;";
-        
-        using(SqliteConnection connection = new SqliteConnection(ConnectionString)){
-        
-            connection.Open();
-        
-            SqliteCommand command = new SqliteCommand(QueryString, connection);
-        
-            command.Parameters.AddWithValue("@nombreDeUsuario", nombreDeUsuario);
-        
-            using(SqliteDataReader reader = command.ExecuteReader()){
-        
-                if(reader.Read()){
-                    id = Convert.ToInt32(reader["id"]);
-                }
-        
-            }
-        
-            connection.Close();
-        
-        }
-        
-        return id;
-    
-    }
 }

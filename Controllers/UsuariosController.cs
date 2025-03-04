@@ -192,4 +192,52 @@ public class UsuariosController : Controller{
 
         }
     }
+
+    [HttpGet]
+    //Vista para cambiar contraseña. Solo deja acceder si es admin.
+    public IActionResult CambiarPassword(int id){ 
+        try{
+            
+            if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+
+            var esAdmin = HttpContext.Session.GetString("Rol") == "Administrador";
+            //Se verifica que el usuario sea admin, si no lo es se le niega el acceso.
+            if(!esAdmin){ 
+                TempData["ErrorMessage"] = "Acceso Denegado";
+                return RedirectToAction("Index");
+            }
+
+            var usuario = repositorioUsuarios.ObtenerDetallesDeUsuario(id);
+            var usuarioVM = new CambiarPasswordVM(usuario);
+            return View(usuarioVM);
+        
+        }catch(Exception e){
+
+            _logger.LogError(e.ToString());
+            return RedirectToAction("Error", "Home");
+        
+        }
+    }
+
+    [HttpPost]
+    //Metodo para cambiar la contraseña, la cambia solamente si coinciden la contraseña y "Repetir contraseña".
+    public IActionResult Cambiar(CambiarPasswordVM usuarioVM){ 
+        try{
+            
+            if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
+            if (!ModelState.IsValid) return RedirectToAction("CambiarPassword", usuarioVM.id);
+
+            var usuario = new Usuarios(usuarioVM);
+            repositorioUsuarios.CambiarPassword(usuario.id, usuario.password);
+
+            TempData["SuccessMessage"] = "¡Contraseña cambiada exitosamente!";
+            return RedirectToAction("Index");
+        
+        }catch(Exception e){
+
+            _logger.LogError(e.ToString());
+            return BadRequest("No se cambió correctamente la contraseña.");
+
+        }
+    }
 }

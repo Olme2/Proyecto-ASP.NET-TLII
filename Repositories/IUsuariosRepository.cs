@@ -7,5 +7,4 @@ public interface IUsuariosRepository{
     List<Usuarios> ListarUsuarios(); //Método para listar todos los usuarios.
     void CambiarPassword(int id, string password); //Método para cambiar la contraseña de un determinado usuario por una nueva.
     void EliminarUsuarioPorId(int id); //Método para eliminar un determinado usuario.
-    int BuscarIdPorNombreDeUsuario(string nombreDeUsuario); //Método para buscar el id de un usuario usando su nombre, ya que el nombre es único. Sirve para modificar la contraseña.
 }

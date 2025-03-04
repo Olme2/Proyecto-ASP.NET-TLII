@@ -27,7 +27,7 @@ public class Usuarios{
     public Usuarios(ModificarUsuarioVM usuarioVM){
         Id = usuarioVM.id;
         NombreDeUsuario = usuarioVM.nombreDeUsuario;
-        Password = usuarioVM.password;
+        Password = string.Empty;
         RolUsuario = usuarioVM.rolUsuario;
     }
     
