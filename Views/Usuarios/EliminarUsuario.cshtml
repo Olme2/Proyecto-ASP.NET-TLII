@@ -1,18 +1,29 @@
 @model EliminarUsuarioVM
 
 <div class="container mt-4">
+
     <div class="mb-4">
+
         <h2 class="text-center">Eliminación del usuario "@Model.nombreDeUsuario"</h2>
+
     </div>
+
     <h3 class="text-center">¿Desea eliminar el usuario?</h3>
-    <form asp-action="Eliminar" method="post" class="text-center"> <!-- Formulario para eliminar usuario. -->
+
+    <!-- Formulario para eliminar usuario. -->
+    <form asp-action="Eliminar" method="post" class="text-center"> 
+
         <input type="hidden" asp-for="id" value="@Model.id">
         <span asp-validation-for="id" class="text-danger"></span> <!-- Validación para ID de usuario. -->
+
         <input type="hidden" asp-for="nombreDeUsuario" value="@Model.nombreDeUsuario">
         <span asp-validation-for="nombreDeUsuario" class="text-danger"></span> <!-- Validación para nombre de usuario. -->
+
         <button type="submit" class="btn btn-danger">Eliminar</button>
         <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+
     </form>
+
 </div>
 
 @section Scripts {<partial name="_ValidationScriptsPartial"/>}

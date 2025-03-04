@@ -4,8 +4,8 @@
     var errorMessage = TempData["ErrorMessage"]; //Mensaje de error para accesos denegados.
 }
 
-@if (errorMessage!=null)
-{
+@if (errorMessage!=null){
+
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         @errorMessage
     </div>
@@ -13,66 +13,125 @@
     <script>
         setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
     </script>
+
 }
 
 <h2>Tablero "@Model.nombre"</h2> 
+
 <hr>
+
 <h3>Propietario</h3>
+
 <p>@Model.nombreUsuarioPropietario</p>
+
 <hr>
+
 <h3>Descripción</h3>  
-<p>@Model.descripcion</p>
+@if(string.IsNullOrEmpty(Model.descripcion)){
+    
+    <p>Sin Descripción</p>
+
+}else{
+
+    <p>@Model.descripcion</p>
+
+}
+
 <hr>
+
 <h3>Tareas</h3>
+
 <div class="container mt-4">
-    @if(Model.listaDeTareas.Count>0){ <!-- Verificamos si el tablero tiene tareas, caso contrario muestra mensaje de que no tiene. -->
+
+    <!-- Verificamos si el tablero tiene tareas, caso contrario muestra mensaje de que no tiene. -->
+    @if(Model.listaDeTareas.Count>0){ 
+
         <table class="table table-bordered">
+
         <thead>
+
             <tr>
+
                 <th>Id</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Estado</th>
                 <th>Color</th>
                 <th>Acción</th>
-                @if(Model.esDueño){ <!-- Si el usuario es dueño sea agrega una columna con el Id del usuario asignado. -->
+                <!-- Si el usuario es dueño sea agrega una columna con el Id del usuario asignado. -->
+                @if(Model.esDueño){ 
+  
                     <th>Usuario Asignado</th>
+  
                 }
+
             </tr>
+
         </thead>
+
         <tbody>
+
             @foreach(var tarea in Model.listaDeTareas){
+
                 <tr>
+
                     <td>@tarea.id</td>
                     <td>@tarea.nombre</td>
                     <td>@tarea.descripcion</td>
                     <td>@tarea.estado</td>
                     <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                     <td>
-                    @if(tarea.idUsuarioAsignado == Model.idUsuarioVisitante || Model.esDueño){ <!-- Verificamos que el usuario que ve el tablero sea dueño del tablero o que tenga esta tareas asignada, si es asi puede modificarla. Si es dueño toda la tarea, sino solo el estado. -->
+                    <!-- Verificamos que el usuario que ve el tablero sea dueño del tablero o que tenga esta tareas asignada, si es asi puede modificarla. Si es dueño toda la tarea, sino solo el estado. -->                        
+                    @if(tarea.idUsuarioAsignado == Model.idUsuarioVisitante || Model.esDueño){ 
+
                         <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a>
+
                     }
-                    @if(Model.esDueño){ <!-- Si el usuario es dueño tiene acceso a mas funciones. -->
+                    <!-- Si el usuario es dueño tiene acceso a mas funciones. -->
+                    @if(Model.esDueño){ 
+
                         <a asp-controller="Tareas" asp-action="EliminarTarea" asp-route-id="@tarea.id" class="btn btn-danger">Borrar</a>
+
                         @if(tarea.idUsuarioAsignado == null){ <!-- Si la tarea no esta asignada a ningun usuario, el boton dice "Asignar", caso contrario dice "Reasignar". -->
+
                             <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Asignar Usuario</a>
+
                         }else{
+
                             <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Resignar Usuario</a>
+
                         }
+
                     }
+
                     </td>
+
                     @if(Model.esDueño){ <!-- Si el usuario es dueño tambien puede ver el ID del usuario asignado a la tarea. -->
+
                         <td>@tarea.nombreUsuarioAsignado</td>
+
                     }
+
                 </tr>
+
             }
+
         </tbody>
+
     </table>
+
     }else{
+
         <h2 class="text-center text-muted">Sin Tareas</h2>
+
     }
+
     @if(Model.esDueño){
+
         <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="@Model.id" class="btn btn-primary">Crear Tarea</a>
+
     }
+
     <a asp-action="Index" class="btn btn-danger">Volver</a>
+
 </div>

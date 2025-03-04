@@ -1,24 +1,50 @@
 @model List<ListarTareasVM>
 
 @{
-    var EsAdmin = ViewData["EsAdmin"]; //Variable para saber si el usuario es Admin o no. De esto depende que tareas se mostraran.
-    var errorMessage = TempData["ErrorMessage"] as string; //Mensaje de error para accesos denegados.
+    
+    //Mensaje de error para accesos denegados o cosas inexistentes.
+    var errorMessage = TempData["ErrorMessage"] as string; 
+    //Mensaje de éxito de creación, modificación o eliminación de tareas.
+    var successMessage = TempData["SuccessMessage"]; 
+    //Variable para saber si el usuario es Admin o no. De esto depende que tareas se mostraran.
+    var EsAdmin = ViewData["EsAdmin"]; 
+
 }
 
 @if (errorMessage!=null){
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">@errorMessage</div>
+    
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        
+        @errorMessage
+        
+    </div>
 
-    <script>
-        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
-    </script>
 }
 
-@if(EsAdmin != null && (bool)EsAdmin){ <!--Verificamos si el usuario es Admin, si lo es se muestran todas las tareas del sistema con todas las acciones, sino solo las asignadas al usuario. -->
+@if(successMessage!=null){    
+    
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        
+        @successMessage
+        
+    </div>
+
+}
+
+<!--Verificamos si el usuario es Admin, si lo es se muestran todas las tareas del sistema con todas las acciones, sino solo las asignadas al usuario. -->
+@if(EsAdmin != null && (bool)EsAdmin){ 
+
     <h1>Lista de Tareas</h1>
-    @if(Model.Count>0){ <!-- Verificamos que el modelo tenga tareas, caso contrario se muestra un mensaje de "Sin tareas". -->
+
+    <!-- Verificamos que el modelo tenga tareas, caso contrario se muestra un mensaje de "Sin tareas". -->
+    @if(Model.Count>0){ 
+
         <table class="table table-bordered">
+
             <thead>
+
                 <tr>
+
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
@@ -26,63 +52,113 @@
                     <th>Color</th>
                     <th>Acción</th>
                     <th>Usuario Asignado</th>
+
                 </tr>
+
             </thead>
+
             <tbody>
+
                 @foreach(var tarea in Model){
+
                     <tr>
+
                         <td>@tarea.id</td>
                         <td>@tarea.nombre</td>
                         <td>@tarea.descripcion</td>
                         <td>@tarea.estado</td>
                         <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                         <td>
+
                             <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es administrador tiene acceso a todas las funciones. -->
                             @if(tarea.idUsuarioAsignado == null){ <!-- Si la tarea no esta asignada a ningun usuario, el boton dice "Asignar", caso contrario dice "Reasignar". -->
+
                                 <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Asignar Usuario</a>
+
                             }else{
+
                                 <a asp-controller="Tareas" asp-action="AsignarUsuario" asp-route-id="@tarea.id" class="btn btn-primary">Resignar Usuario</a>
+
                             }
+
                             <a asp-controller="Tareas" asp-action="EliminarTarea" asp-route-id="@tarea.id" class="btn btn-danger">Borrar</a>
+
                         </td>
                         <td>@(tarea.nombreUsuarioAsignado)</td>
+
                     </tr>
+
                 }
+
             </tbody>
+
         </table>
+
     }else{
+
         <h2 class="text-center text-muted">SIN TAREAS</h2>
+
     }
+
 }else{
+
     <h1>Lista de Tareas Asignadas</h1>
-    @if(Model.Count>0){ <!-- Verificamos que el modelo tenga tareas, caso contrario se muestra un mensaje de "Sin tareas". -->
+
+    <!-- Verificamos que el modelo tenga tareas, caso contrario se muestra un mensaje de "Sin tareas". -->
+    @if(Model.Count>0){ 
+
         <table class="table table-bordered">
+
             <thead>
+
                 <tr>
+
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Estado</th>
                     <th>Color</th>
                     <th>Acción</th>
+
                 </tr>
+
             </thead>
+
             <tbody>
+
                 @foreach(var tarea in Model){
+
                     <tr>
+
                         <td>@tarea.id</td>
                         <td>@tarea.nombre</td>
                         <td>@tarea.descripcion</td>
                         <td>@tarea.estado</td>
                         <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                         <td>
+
                             <a asp-controller="Tareas" asp-action="ModificarTarea" asp-route-id="@tarea.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario fue asignado para esta tarea, puede Modificar solo su estado. -->
+
                         </td>
+
                     </tr>
+
                 }
+
             </tbody>
+
         </table>
+
     }else{
+
         <h2 class="text-center text-muted">SIN TAREAS</h2>
+
     }
+
 }
+
+<script>
+
+        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
+
+</script>

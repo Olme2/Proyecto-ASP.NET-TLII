@@ -1,30 +1,53 @@
 @model EliminarTableroVM
+
 @{
-    var errorMessage = ViewData["ErrorMessage"] as string; //Mensaje de error por si el tablero tiene tareas asignadas.
+
+    //Mensaje de error por si el tablero tiene tareas asignadas.
+    var errorMessage = ViewData["ErrorMessage"] as string;
+
 }
 
 @if(errorMessage != null && errorMessage.Length > 0) {
+
     <div class="alert alert-danger">
+
         @errorMessage
+
     </div>
+
     <a asp-action="Index" class="btn btn-primary">Volver</a>
+
 }else{
+
     <div class="container mt-4">
+
         <div class="mb-4">
+
             <h2 class="text-center">Eliminacion del tablero @Model.nombre</h2>
+
         </div>
+
         <h3 class="text-center">¿Desea eliminar el tablero?</h3>
+
         <div class="text-center">
+
             <form asp-action="Eliminar" method="post"> <!-- Formulario para eliminar el tablero. -->
+
                 <input type="hidden" asp-for="nombre" value="@Model.nombre">
                 <span asp-validation-for="nombre" class="text-danger"></span> <!-- Validación para nombre. -->
+
                 <input type="hidden" asp-for="id" value="@Model.id"/>
                 <span asp-validation-for="id" class="text-danger"></span> <!-- Validación para ID. -->
+
                 <button type="submit" class="btn btn-danger">Eliminar</button>
                 <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+
             </form>
+
         </div>
+
     </div>
+
 }
 
 @section Scripts{<partial name="_ValidationScriptsPartial"/>}

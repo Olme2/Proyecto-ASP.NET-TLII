@@ -1,50 +1,106 @@
 @model List<ListarUsuariosVM>
 
 @{
-    var EsAdmin = ViewData["EsAdmin"]; //Variable para ver si el usuario es admin, en ese caso se muestran las acciones crear, modificar y eliminar.
-    var errorMessage = TempData["ErrorMessage"] as string; //Mensaje de error para accesos denegados.
+    
+    //Mensaje de error para accesos denegados.
+    var errorMessage = TempData["ErrorMessage"] as string; 
+    //Mensaje de éxito de creación, modificación o eliminación de usuarios.
+    var successMessage = TempData["SuccessMessage"]; 
+    //Variable para ver si el usuario es admin, en ese caso se muestran las acciones crear, modificar y eliminar.
+    var EsAdmin = ViewData["EsAdmin"]; 
+
 }
 
 @if (errorMessage!=null){
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">@errorMessage</div>
 
-    <script>
-        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
-    </script>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        
+        @errorMessage
+        
+    </div>
+
+}
+
+@if(successMessage!=null){    
+    
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        
+        @successMessage
+        
+    </div>
+
 }
 
 <h1>Lista de Usuarios</h1>
-@if(Model.Count>0){ <!-- Verificamos que el modelo tenga usuarios, caso contrario se muestra cartel de "Sin usuarios". -->
+
+<!-- Verificamos que el modelo tenga usuarios, caso contrario se muestra cartel de "Sin usuarios". -->
+@if(Model.Count>0){ 
+
     <table class="table table-bordered">
+
         <thead>
+
             <tr>
+
                 <th>Id</th>
                 <th>Usuario</th>
-                @if(EsAdmin!=null && (bool)EsAdmin){  <!-- Verificamos que el usuario sea admin, para mostrar o no la columna "Acción". -->
+                <!-- Verificamos que el usuario sea admin, para mostrar o no la columna "Acción". -->
+                @if(EsAdmin!=null && (bool)EsAdmin){  
+
                     <th>Acción</th>
+
                 }
+
             </tr>
+
         </thead>
+
         <tbody>
             @foreach(var usuario in Model){
+
                 <tr>
+
                     <td>@usuario.id</td>
                     <td>@usuario.nombreDeUsuario</td>
-                    @if(EsAdmin!=null && (bool)EsAdmin){ <!-- Verificamos que el usuario sea admin, para mostrar o no las acciones "Modificar" y "Borrar". -->
+                    <!-- Verificamos que el usuario sea admin, para mostrar o no las acciones "Modificar" y "Borrar". -->
+                    @if(EsAdmin!=null && (bool)EsAdmin){ 
+
                         <td>
+
                             <a asp-controller="Usuarios" asp-action="ModificarUsuario" asp-route-id="@usuario.id" class="btn btn-secondary">Modificar</a>
                             <a asp-controller="Usuarios" asp-action="EliminarUsuario" asp-route-id="@usuario.id" class="btn btn-danger">Borrar</a>
+
                         </td>
+
                     }
+
                 </tr>
+
             }
+
         </tbody>
+
     </table>
+
 }else{
+
     <h2 class="text-center text-muted">SIN USUARIOS</h2>
+
 }
-@if(EsAdmin!=null && (bool)EsAdmin){ <!-- Verificamos que el usuario sea admin, para mostrar o no la acción "Agregar Usuario". -->
+
+<!-- Verificamos que el usuario sea admin, para mostrar o no la acción "Agregar Usuario". -->
+@if(EsAdmin!=null && (bool)EsAdmin){ 
+
     <div class="text-center">
+
         <a asp-action="AltaUsuario" class="btn btn-primary">Agregar Usuario</a>
+
     </div>
+
 }
+
+<script>
+
+    setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
+
+</script>

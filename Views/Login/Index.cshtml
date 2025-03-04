@@ -1,47 +1,91 @@
 @model LoginVM
+
 @{
-    var mensaje = TempData["Mensaje"];  <!-- Mensaje de cambio exitoso de contraseña -->
-    var errorMessage = TempData["ErrorMessage"]; <!-- Mensaje de acceso denegado, por si se intenta acceder al cambio de contraseña si nombre de usuario -->
+    //Mensaje de acceso denegado, por si se intenta acceder al cambio de contraseña si nombre de usuario.
+    var errorMessage = TempData["ErrorMessage"]; 
+    //Mensaje de sesion cerrada con exito.
+    var successMessage = TempData["SuccessMessage"]; 
+    //Mensaje de cambio exitoso de contraseña
+    var mensaje = TempData["Mensaje"]; 
+
 }
 
-@if (errorMessage!=null)
-{
+@if(errorMessage!=null){
+    
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        
         @errorMessage
+    
+    </div>
+
+}
+
+@if(successMessage!=null){    
+    
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        
+        @successMessage
+
     </div>
 
 }
 
 <h1 class="text-center">Login</h1>
+
 <h3 class="text-center">Iniciar Sesión</h3>
+
 <div class="d-flex justify-content-center">
-    <form method="post" asp-action="Login" class="w-50"> <!-- Formulario de inicio de sesión. -->
+
+    <!-- Formulario de inicio de sesión. -->
+    <form method="post" asp-action="Login" class="w-50"> 
+
         <div class="form-group">
+        
             <label asp-for="nombreDeUsuario" class="form-label">Usuario:</label>
             <input class="form-control" asp-for="nombreDeUsuario" value="@Model.nombreDeUsuario">
             <span asp-validation-for="nombreDeUsuario" class="text-danger"></span> <!-- Validación para nombre de usuario. -->
+        
         </div>
+        
         <div class="form-group">
+        
             <label asp-for="password" class="form-label">Contraseña:</label>
             <input type="password" class="form-control" asp-for="password">
             <span asp-validation-for="password" class="text-danger"></span> <!-- Validación para contraseña. -->
+        
         </div>
+        
         <div class="mt-3 d-flex justify-content-between">
+        
             <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-        @if(@Model.error=="Contraseña incorrecta"){ <!-- Si label contraseña es incorrecta se abre un link para cambiarla. -->
-            <a asp-action="CambiarPassword" asp-route-id="@Model.id" class="text-decoration-none">¿Olvidó su contraseña?</a>
-        }
+            <!-- Si la contraseña es incorrecta se abre un link para cambiarla. -->
+            @if(@Model.error=="Contraseña incorrecta"){ 
+                <a asp-action="CambiarPassword" asp-route-id="@Model.id" class="text-decoration-none">¿Olvidó su contraseña?</a>
+            }
+        
         </div>
-        @if(mensaje!=null){ <!-- Si se cambio correctamente la contraseña se muestra un mensaje -->
+        
+        <!-- Si se cambio correctamente la contraseña se muestra un mensaje -->
+        @if(mensaje!=null){ 
+        
             <div class="alert alert-success mt-3" role="alert">@mensaje</div>
+        
         }
-        @if(!string.IsNullOrEmpty(Model.error)){  <!-- Muestra elimina mensaje de error de contraseña incorrecta o usuario inexistente-->
+        
+        <!-- Muestra elimina mensaje de error de contraseña incorrecta o usuario inexistente-->
+        @if(!string.IsNullOrEmpty(Model.error)){  
+        
             <div class="alert alert-danger mt-3" role="alert">@Model.error</div>
+        
         }
+    
     </form>
+
 </div>
 
 @section Scripts{<partial name="_ValidationScriptsPartial"/>}
+
 <script>
-    setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
+    //Funcion que elimina Mensaje de error despues de 5 segundos
+    setTimeout(() => document.querySelector(".alert").remove(), 5000); 
 </script>

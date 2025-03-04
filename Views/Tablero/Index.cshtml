@@ -1,110 +1,245 @@
 @model List<ListarTablerosVM>
+
 @{
-    var tablerosUsuario = ViewData["tablerosUsuario"] as List<ListarTablerosVM>; //Tableros creados por el usuario.
-    var esAdmin = ViewData["EsAdmin"]; //ViewData para ver si el usuario es admin.
-    var errorMessage = TempData["ErrorMessage"]; //Mensaje de error que puede venir de un acceso erroneo a otros metodos relacionados con el controller.
+
+    //Mensaje de error que puede venir de un acceso erroneo a otros metodos relacionados con el controller.
+    var errorMessage = TempData["ErrorMessage"]; 
+    //Mensaje de éxito de creación, modificación o eliminación de tableros.
+    var successMessage = TempData["SuccessMessage"]; 
+    //Mensaje de bienvenida al usuario logueado.
+    var welcomeMessage = TempData["WelcomeMessage"]; 
+    //ViewData para ver si el usuario es admin.
+    var esAdmin = ViewData["EsAdmin"]; 
+    //Tableros creados por el usuario.
+    var tablerosUsuario = ViewData["tablerosUsuario"] as List<ListarTablerosVM>; 
+
 }
-@if (errorMessage!=null)
-{
+
+@if (errorMessage!=null){
+    
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    
         @errorMessage
+    
     </div>
 
-    <script>
-        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
-    </script>
 }
+
+@if(successMessage!=null){    
+    
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        
+        @successMessage
+        
+    </div>
+
+}
+
+@if(welcomeMessage!=null){
+
+    <h1 class="text-center">
+        
+        @welcomeMessage
+        
+    </h1>
+
+}
+
 <h1>Lista de Tableros</h1>
-@if(esAdmin!=null && (bool)esAdmin){ <!-- Distinción de admin, si no es admin se muestran los tableros propios y con tareas asignadas nada mas, sino muestra todos los tableros. -->
-    @if(Model != null && Model.Count>0){ <!-- Verificamos que hayan tableros en el model, caso contrario se muestra un mensaje de que no hay. -->
+
+<!-- Distinción de admin, si no es admin se muestran los tableros propios y con tareas asignadas nada mas, sino muestra todos los tableros. -->
+@if(esAdmin!=null && (bool)esAdmin){ 
+
+    <!-- Verificamos que hayan tableros en el model, caso contrario se muestra un mensaje de que no hay. -->
+    @if(Model != null && Model.Count>0){ 
+
         <table class="table table-bordered">
+
             <thead>
+
                 <tr>
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
                     <th>Acción</th>
                 </tr>
+
             </thead>
+
             <tbody>
+                
                 @foreach(var tablero in Model){ 
+
                         <tr>
+
                             <td>@tablero.id</td>
                             <td>@tablero.nombre</td>
-                            <td>@tablero.descripcion</td>
+                            @if(string.IsNullOrEmpty(tablero.descripcion)){
+ 
+                                <td>Sin Descripción.</td>
+ 
+                            }else{
+ 
+                                <td>@tablero.descripcion</td>
+ 
+                            }
                             <td>
+
                                 <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es admin en este caso, puede acceder a todas las funciones. -->
                                 <a asp-action="EliminarTablero" asp-route-id="@tablero.id" class="btn btn-danger">Borrar</a>
                                 <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a>
+
                             </td>
+
                         </tr>
+
                 }
+
             </tbody>
+
         </table>
+
     }else{
+
         <h3 class="text-center text-muted">SIN TABLEROS</h3>
+
     }
+
         <div class="text-center">
+
             <a asp-action="AltaTablero" class="btn btn-primary">Agregar Tablero</a>
+
         </div>
+
 }else{
+
     <h2>Mis Tableros</h2>
-    @if(tablerosUsuario != null &&  tablerosUsuario.Count>0){ <!-- Verificamos que hayan tableros creados por el usuario, caso contrario se muestra un mensaje de que no hay. -->
+
+    <!-- Verificamos que hayan tableros creados por el usuario, caso contrario se muestra un mensaje de que no hay. -->
+    @if(tablerosUsuario != null &&  tablerosUsuario.Count>0){ 
+
         <table class="table table-bordered">
+
             <thead>
+
                 <tr>
+
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
                     <th>Acción</th>
+
                 </tr>
+
             </thead>
+
             <tbody>
+
                 @foreach(var tablero in tablerosUsuario){ 
+
                         <tr>
+
                             <td>@tablero.id</td>
                             <td>@tablero.nombre</td>
-                            <td>@tablero.descripcion</td>
+                            @if(string.IsNullOrEmpty(tablero.descripcion)){
+
+                                <td>Sin Descripción.</td>
+
+                            }else{
+
+                                <td>@tablero.descripcion</td>
+
+                            }
+
                             <td>
+
                                 <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es dueño de estos tableros, tiene acceso a todas las funciones. -->
                                 <a asp-action="EliminarTablero" asp-route-id="@tablero.id" class="btn btn-danger">Borrar</a>
                                 <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a>
+
                             </td>
+
                         </tr>
+
                 }
+
             </tbody>
+
         </table>
+
     }else{
+
         <h3 class="text-center text-muted">SIN TABLEROS</h3>
+
     }
+
     <div class="text-center">
+
         <a asp-action="AltaTablero" class="btn btn-primary">Agregar Tablero</a>
+
     </div>
+
     <h2>Tableros con Tareas Asignadas</h2>
+
     @if(Model.Count>0){ <!-- Verificamos que hayan tableros con tareas asignadas para el usuario, caso contrario se muestra un mensaje de que no hay. -->
+
         <table class="table table-bordered">
+
             <thead>
+
                 <tr>
+
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
                     <th>Acción</th>
+
                 </tr>
+
             </thead>
+
             <tbody>
+
                 @foreach(var tablero in Model){
+
                     <tr>
+
                         <td>@tablero.id</td>
                         <td>@tablero.nombre</td>
-                        <td>@tablero.descripcion</td>
+                        @if(string.IsNullOrEmpty(tablero.descripcion)){
+
+                            <td>Sin Descripción.</td>
+
+                        }else{
+
+                            <td>@tablero.descripcion</td>
+
+                        }
+
                         <td>
+
                             <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a> <!-- Como el usuario no es dueño del tableros solo los puede ver. -->
+
                         </td>
+
                     </tr>
+
                 }
+
             </tbody>
+
         </table>
+
     }else{
+
         <h3 class="text-center text-muted">SIN TABLEROS</h3>
+
     }
+
 }
+
+<script>
+
+        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
+
+</script>
