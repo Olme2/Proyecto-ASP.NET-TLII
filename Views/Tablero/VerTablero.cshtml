@@ -1,7 +1,12 @@
 @model VerTableroVM
 
 @{
-    var errorMessage = TempData["ErrorMessage"]; //Mensaje de error para accesos denegados.
+
+    //Mensaje de error para accesos denegados.
+    var errorMessage = TempData["ErrorMessage"]; 
+    //Mensaje de éxito de creación, modificación o eliminación de tableros.
+    var successMessage = TempData["SuccessMessage"]; 
+
 }
 
 @if (errorMessage!=null){
@@ -10,9 +15,15 @@
         @errorMessage
     </div>
 
-    <script>
-        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
-    </script>
+}
+
+@if(successMessage!=null){    
+    
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        
+        @successMessage
+        
+    </div>
 
 }
 
@@ -77,7 +88,15 @@
 
                     <td>@tarea.id</td>
                     <td>@tarea.nombre</td>
-                    <td>@tarea.descripcion</td>
+                    @if(string.IsNullOrEmpty(tarea.descripcion)){
+ 
+                        <td>Sin Descripción.</td>
+
+                    }else{
+
+                        <td>@tarea.descripcion</td>
+
+                    }
                     <td>@tarea.estado</td>
                     <td><div style="width: 20px; height: 20px; background-color: @tarea.color; border-radius: 50%;"></div></td>
                     <td>
@@ -135,3 +154,9 @@
     <a asp-action="Index" class="btn btn-danger">Volver</a>
 
 </div>
+
+<script>
+
+    setTimeout(() => document.querySelector(".alert").remove(), 6000); //Funcion que elimina Mensaje de error despues de 5 segundos
+
+</script>

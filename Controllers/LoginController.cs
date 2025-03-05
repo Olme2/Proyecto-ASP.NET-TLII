@@ -24,7 +24,7 @@ public class LoginController : Controller{
         }catch(Exception e){
             
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no cargó bien la página."});
         
         }
     }
@@ -56,7 +56,7 @@ public class LoginController : Controller{
             
             _logger.LogWarning($"Intento de acceso inválido - Usuario: {model.nombreDeUsuario} Clave ingresada: {model.password}");
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no se encontro el usuario."});
         
         }
     }
@@ -65,6 +65,7 @@ public class LoginController : Controller{
     public IActionResult Logout(){ 
         try{
 
+            if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login"); 
             HttpContext.Session.Clear();
             TempData["SuccessMessage"] = "Sesión cerrada correctamente.";
             return RedirectToAction("Index");
@@ -72,7 +73,7 @@ public class LoginController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.Message);
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no se pudo cerrar la sesión correctamente."});
 
         }
     }

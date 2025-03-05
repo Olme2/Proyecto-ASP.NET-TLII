@@ -32,7 +32,7 @@ public class UsuariosController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no cargaron correctamente los usuarios."});
 
         }
     }
@@ -55,7 +55,7 @@ public class UsuariosController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no cargó correctamente la página."});
 
         }
     }
@@ -103,7 +103,7 @@ public class UsuariosController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "el usuario solicitado no existe."});
 
         }
     }
@@ -166,7 +166,7 @@ public class UsuariosController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "el usuario solicitado no existe."});
 
         }
     }
@@ -214,7 +214,7 @@ public class UsuariosController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "el usuario solicitado no existe"});
         
         }
     }

@@ -51,7 +51,7 @@ public class TareasController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no se cargaron correctamente las tareas."});
 
         }
     }
@@ -80,7 +80,7 @@ public class TareasController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no cargo correctamente la página."});
 
         }
     }
@@ -148,7 +148,7 @@ public class TareasController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "la tarea solicitada no existe."});
 
         }
     }
@@ -224,7 +224,7 @@ public class TareasController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "la tarea solicitada no existe."});
 
         }
     }
@@ -297,7 +297,7 @@ public class TareasController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "la tarea solicitada no existe."});
 
         }
     }

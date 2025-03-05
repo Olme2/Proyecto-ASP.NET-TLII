@@ -54,7 +54,7 @@ public class TableroController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "no cargaron correctamente los tableros."});
 
         }
     }    
@@ -115,7 +115,7 @@ public class TableroController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "el tablero solicitado no existe."});
 
         }
     }
@@ -201,7 +201,7 @@ public class TableroController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "el tablero solicitado no existe."});
 
         }
     }
@@ -264,7 +264,7 @@ public class TableroController : Controller{
         }catch(Exception e){
 
             _logger.LogError(e.ToString());
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Home", new {error = "el tablero solicitado no existe"});
 
         }
     }

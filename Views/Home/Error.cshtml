@@ -5,14 +5,14 @@
     <div class="text-center">
 
         <h1 class="text-danger">¡Oops! Algo salió mal 😢</h1>
-        <p class="lead">Ha ocurrido un error inesperado. Estamos trabajando para solucionarlo.</p>
+        <p class="lead">El error fue que @Model.error</p>
 
         @if (Model.ShowRequestId)
         {
             <p class="text-muted">ID de solicitud: <strong>@Model.RequestId</strong></p>
         }
 
-        <a href="/" class="btn btn-primary mt-3">Volver al inicio</a>
+        <a asp-controller="Tablero" asp-action="Index" class="btn btn-primary mt-3">Volver</a>
 
     </div>
     
