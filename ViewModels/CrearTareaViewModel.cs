@@ -7,14 +7,23 @@ public class CrearTareaVM{
     private string? Descripcion;
     private string? Color;
     private Tareas.EstadoTarea Estado;
+    private List<ListarTablerosVM> ListaDeTableros;
     
     public CrearTareaVM(){
         Nombre = string.Empty;
+        ListaDeTableros = new List<ListarTablerosVM>();
     }
     
     public CrearTareaVM(int idTablero){
         Nombre = string.Empty;
         IdTablero = idTablero;
+        ListaDeTableros = new List<ListarTablerosVM>();
+    }
+
+    public CrearTareaVM(int idTablero, List<ListarTablerosVM> listaDeTableros){
+        Nombre = string.Empty;
+        IdTablero = idTablero;
+        ListaDeTableros = listaDeTableros;
     }
     
     [Required(ErrorMessage = "ID de tablero obligatorio.")] //Validacion en backend para la obligatoriedad del ID del tablero.
@@ -29,5 +38,7 @@ public class CrearTareaVM{
     
     [Required(ErrorMessage = "Estado de tarea obligatorio.")] //Validacion en backend para la obligatoriedad del estado de la tarea.
     public Tareas.EstadoTarea estado {get => Estado; set => Estado = value;}
+
+    public List<ListarTablerosVM> listaDeTableros {get => ListaDeTableros; set => ListaDeTableros = value;}
 
 }

@@ -1,5 +1,22 @@
 @model CrearUsuarioVM
 
+@{
+
+    //Mensaje de error por si se repite el usuario.
+    var errorMessage = TempData["ErrorMessage"];
+
+}
+
+@if(errorMessage != null){
+
+    <div class="alert alert-danger" role="alert">
+
+        @errorMessage
+
+    </div>
+    
+}
+
 <!-- Formulario para crear usuario. -->
 <form asp-action="CrearUsuario" method="post" class="form" > 
 
@@ -42,5 +59,12 @@
     </div>
 
 </form>
+
+
+<script>
+
+        setTimeout(() => document.querySelector(".alert").remove(), 5000); //Funcion que elimina Mensaje de error despues de 5 segundos
+
+</script>
 
 @section Scripts{<partial name="_ValidationScriptsPartial"/>}

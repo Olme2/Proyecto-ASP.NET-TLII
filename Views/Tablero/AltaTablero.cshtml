@@ -1,9 +1,37 @@
 @model CrearTableroVM
 
+@{
+
+    //ViewData para ver si el usuario es admin.
+    var esAdmin = ViewData["EsAdmin"]; 
+
+}
+
 <!-- Formulario para crear un tablero. -->
 <form asp-action="CrearTablero" method="post" class="form"> 
     
-    <input type="hidden" asp-for="idUsuarioPropietario" value="@Model.idUsuarioPropietario">
+    @if(esAdmin!=null && (bool)esAdmin){
+        
+        <div class="form-group">        
+
+            <label asp-for="idUsuarioPropietario" class="form-label">Usuario Propietario</label>
+            <select asp-for="idUsuarioPropietario" class="form-select">
+
+                @foreach (var usuario in @Model.listaDeUsuarios){
+                    <option value="@usuario.id">@usuario.nombreDeUsuario</option>
+                }
+
+            </select>
+        </div>
+        
+    }else{
+
+        <input type="hidden" asp-for="idUsuarioPropietario" value="@Model.idUsuarioPropietario">
+        
+    
+    }
+
+    <span asp-validation-for="idUsuarioPropietario" class="text-danger"></span> <!-- Validación para ID del Usuario propietario. -->
     
     <div class="form-group">
     

@@ -30,6 +30,7 @@ public class LoginController : Controller{
     }
 
     //Metodo para verificar inicio de sesión. Si el usuario y contraseña son correctos, ingresa al sistema. Si el usuario no existe se le avisa al usuario. Si la contraseña esta mal, se abre un link para cambiarla.
+    [HttpPost]
     public IActionResult Login(LoginVM model){
         try{
 

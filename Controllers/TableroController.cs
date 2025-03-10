@@ -27,12 +27,17 @@ public class TableroController : Controller{
             var EsAdmin = HttpContext.Session.GetString("Rol") == "Administrador"; 
             ViewData["EsAdmin"] = EsAdmin; 
 
+            HttpContext.Session.SetString("origen", "Tablero");
+
             var tablerosVM = new List<ListarTablerosVM>();
             //Verificacion de admin, para ver si se manda todos los tableros a la lista, o solo los creados y con tareas asignadas.
             if(EsAdmin){
 
                 var tableros = repositorioTablero.ListarTableros(); 
-                tablerosVM = tableros.Select(t => new ListarTablerosVM(t)).ToList();
+                tablerosVM = tableros.Select(t =>{ 
+                    var nombreUsuarioAsignado = repositorioUsuarios.ObtenerDetallesDeUsuario((int)t.idUsuarioPropietario).nombreDeUsuario;
+                    return new ListarTablerosVM(t, nombreUsuarioAsignado);
+                }).ToList();
             
             }else{
 
@@ -40,10 +45,16 @@ public class TableroController : Controller{
 
                 //Obtenemos solo los tableros con tareas asignadas para cierto usuario.
                 var tableros = repositorioTablero.ListarTablerosConTareasAsignadas(idUsuario); 
-                tablerosVM = tableros.Select(t => new ListarTablerosVM(t)).ToList();
+                tablerosVM = tableros.Select(t =>{ 
+                    var nombreUsuarioAsignado = repositorioUsuarios.ObtenerDetallesDeUsuario((int)t.idUsuarioPropietario).nombreDeUsuario;
+                    return new ListarTablerosVM(t, nombreUsuarioAsignado);
+                }).ToList();
                 //Obtenemos solo los tableros creados por cierto usuario.
                 var tablerosUsuario = repositorioTablero.ListarTablerosDeUsuario(idUsuario); 
-                var tablerosUsuarioVM = tablerosUsuario.Select(t => new ListarTablerosVM(t)).ToList();
+                var tablerosUsuarioVM = tablerosUsuario.Select(t =>{ 
+                    var nombreUsuarioAsignado = repositorioUsuarios.ObtenerDetallesDeUsuario((int)t.idUsuarioPropietario).nombreDeUsuario;
+                    return new ListarTablerosVM(t, nombreUsuarioAsignado);
+                }).ToList();
                 //Se envia por ViewData ya que los otros tableros los mandamos por vista.
                 ViewData["tablerosUsuario"] = tablerosUsuarioVM; 
             
@@ -52,7 +63,7 @@ public class TableroController : Controller{
             return View(tablerosVM);
         
         }catch(Exception e){
-
+            
             _logger.LogError(e.ToString());
             return RedirectToAction("Error", "Home", new {error = "no cargaron correctamente los tableros."});
 
@@ -127,12 +138,26 @@ public class TableroController : Controller{
             
             if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
             
+            var esAdmin = HttpContext.Session.GetString("Rol") == "Administrador";
+
             var model = new CrearTableroVM();
-            
-            var idUsuarioPropietario = HttpContext.Session.GetInt32("Id");
-            //Se hace verificacion porque dice que puede ser null, pero si el usuario esta logueado no deberia. Se crea un modelo con el id del usuario que controla el sistema para que se coloque como propietario en la vista en un input hidden.
-            if(idUsuarioPropietario.HasValue){
-                model = new CrearTableroVM((int)idUsuarioPropietario); 
+
+            //Verificamos si el usuario es admin para determinar si puede crear tableros con cualquier usuario o solo con el suyo. Si es admin se pasa la lista de usuarios completa, sino solo el id del que esta creando el tablero.
+            if(esAdmin){
+                
+                ViewData["EsAdmin"] = esAdmin;
+                var listaDeUsuarios = repositorioUsuarios.ListarUsuarios();
+                var listaDeUsuariosVM = listaDeUsuarios.Select(u => new ListarUsuariosVM(u)).ToList();
+                model = new CrearTableroVM(listaDeUsuariosVM);
+
+            }else{
+
+                var idUsuarioPropietario = HttpContext.Session.GetInt32("Id");
+                //Se hace verificacion porque dice que puede ser null, pero si el usuario esta logueado no deberia. Se crea un modelo con el id del usuario que controla el sistema para que se coloque como propietario en la vista en un input hidden.
+                if(idUsuarioPropietario.HasValue){
+                    model = new CrearTableroVM((int)idUsuarioPropietario); 
+                }
+
             }
             
             return View(model);
@@ -157,10 +182,12 @@ public class TableroController : Controller{
             repositorioTablero.CrearTablero(tablero);
             
             TempData["SuccessMessage"] = "¡Tablero \""+tableroVM.nombre+"\" creado con éxito!";
+            _logger.LogInformation($"Tablero "+tablero.nombre+" creado correctamente.");
             return RedirectToAction("Index");
         
         }catch(Exception e){
-
+        
+            _logger.LogWarning("Creación de tablero sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Creación de tablero sin éxito.");
 
@@ -217,11 +244,13 @@ public class TableroController : Controller{
             var tablero = new Tablero(tableroVM);
             repositorioTablero.ModificarTablero(tablero.id, tablero);
             
+            _logger.LogInformation($"Tablero "+tablero.nombre+" modificado correctamente.");
             TempData["SuccessMessage"] = "¡Tablero \""+tableroVM.nombre+"\" modificado con éxito!";
             return RedirectToAction("Index");
 
         }catch(Exception e){
 
+            _logger.LogInformation($"Modificación de tablero sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Modificación de tablero sin éxito.");
 
@@ -280,11 +309,13 @@ public class TableroController : Controller{
             var tablero = new Tablero(tableroVM);
             repositorioTablero.EliminarTableroPorId(tablero.id);
             
+            _logger.LogInformation($"Tablero "+tablero.nombre+" eliminado correctamente.");
             TempData["SuccessMessage"] = "¡Tablero \""+tableroVM.nombre+"\" eliminado con éxito!";
             return RedirectToAction("Index");
         
         }catch(Exception e){
 
+            _logger.LogWarning("Eliminación de tablero sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Eliminación de tablero sin éxito.");
 

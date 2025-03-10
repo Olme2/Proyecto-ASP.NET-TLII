@@ -10,9 +10,11 @@ public class ModificarTareaVM{
     private Tareas.EstadoTarea Estado;
     private int? IdUsuarioAsignado;
     private bool EsDueño;
+    private List<ListarTablerosVM> ListaDeTableros;
 
     public ModificarTareaVM(){
         Nombre = string.Empty;
+        ListaDeTableros = new List<ListarTablerosVM>();
     }
 
     public ModificarTareaVM(Tareas tarea){
@@ -24,6 +26,7 @@ public class ModificarTareaVM{
         Estado = tarea.estado;
         IdUsuarioAsignado = tarea.idUsuarioAsignado;
         EsDueño = true;
+        ListaDeTableros = new List<ListarTablerosVM>();
     }
 
     public ModificarTareaVM(ModificarTareaVM tarea, bool esDueño){
@@ -35,6 +38,19 @@ public class ModificarTareaVM{
         Estado = tarea.estado;
         IdUsuarioAsignado = tarea.idUsuarioAsignado;
         EsDueño = esDueño;
+        ListaDeTableros = new List<ListarTablerosVM>();
+    }
+
+    public ModificarTareaVM(ModificarTareaVM tarea, List<ListarTablerosVM> listaDeTableros){
+        Id = tarea.id;
+        IdTablero = tarea.idTablero;
+        Nombre = tarea.nombre;
+        Descripcion = tarea.descripcion;
+        Color = tarea.color;
+        Estado = tarea.estado;
+        IdUsuarioAsignado = tarea.idUsuarioAsignado;
+        EsDueño = true;
+        ListaDeTableros = listaDeTableros;
     }
 
     [Required(ErrorMessage = "ID de tarea obligatorio.")]  //Validacion en backend para la obligatoriedad del ID de la tarea.
@@ -56,5 +72,7 @@ public class ModificarTareaVM{
     public int? idUsuarioAsignado {get => IdUsuarioAsignado; set => IdUsuarioAsignado = value;}
 
     public bool esDueño {get => EsDueño; set => EsDueño = value;}
+
+    public List<ListarTablerosVM> listaDeTableros {get => ListaDeTableros; set => ListaDeTableros = value;}
 
 }

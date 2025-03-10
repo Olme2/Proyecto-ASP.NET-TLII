@@ -67,14 +67,24 @@ public class UsuariosController : Controller{
             if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
             if(!ModelState.IsValid) return RedirectToAction("AltaUsuario");
 
+            var nombresDeUsuario = repositorioUsuarios.ListarUsuarios().Select(u => u.nombreDeUsuario).ToList();
+
+            //Se verifica que no se haya usado un nombre de usuario ya existente, ya que como cada nombre de usuario es único, no se podria hacer eso.
+            if(nombresDeUsuario.Contains(usuarioVM.nombreDeUsuario)){
+                TempData["ErrorMessage"] = "El nombre de usuario ya existe, use otro.";
+                return RedirectToAction("AltaUsuario");
+            }
+
             var usuario = new Usuarios(usuarioVM);
             repositorioUsuarios.CrearUsuario(usuario);
 
+            _logger.LogInformation($"Usuario "+usuario.nombreDeUsuario+" creado correctamente.");
             TempData["SuccessMessage"] = "¡Usuario \""+usuarioVM.nombreDeUsuario+"\" creado con éxito!";    
             return RedirectToAction("Index"); 
     
         }catch(Exception e){
 
+            _logger.LogWarning("Creación de usuario sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Creación de usuario sin éxito.");
 
@@ -119,11 +129,13 @@ public class UsuariosController : Controller{
             var usuario = new Usuarios(usuarioVM);
             repositorioUsuarios.ModificarUsuario(usuario.id, usuario);
 
+            _logger.LogInformation($"Usuario "+usuario.nombreDeUsuario+" modificado correctamente.");
             TempData["SuccessMessage"] = "¡Usuario \""+usuarioVM.nombreDeUsuario+"\" modificado con éxito!";
             return RedirectToAction("Index");
 
         }catch(Exception e){
 
+            _logger.LogError("Modificación de usuario sin éxito");
             _logger.LogError(e.ToString());
             return BadRequest("Modificación de usuario sin éxito");
         }
@@ -182,11 +194,13 @@ public class UsuariosController : Controller{
             var usuario = new Usuarios(usuarioVM);
             repositorioUsuarios.EliminarUsuarioPorId(usuario.id);
 
+            _logger.LogInformation($"Usuario "+usuario.nombreDeUsuario+" eliminado correctamente.");
             TempData["SuccessMessage"] = "¡Usuario \""+usuarioVM.nombreDeUsuario+"\" eliminado con éxito!";
             return RedirectToAction("Index");
 
         }catch(Exception e){
 
+            _logger.LogWarning("Eliminación de usuario sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Eliminación de usuario sin éxito.");
 
@@ -230,11 +244,13 @@ public class UsuariosController : Controller{
             var usuario = new Usuarios(usuarioVM);
             repositorioUsuarios.CambiarPassword(usuario.id, usuario.password);
 
+            _logger.LogInformation($"Contraseña de usuario "+usuario.nombreDeUsuario+" cambiada correctamente.");
             TempData["SuccessMessage"] = "¡Contraseña cambiada exitosamente!";
             return RedirectToAction("Index");
         
         }catch(Exception e){
 
+            _logger.LogWarning("No se cambió correctamente la contraseña.");
             _logger.LogError(e.ToString());
             return BadRequest("No se cambió correctamente la contraseña.");
 

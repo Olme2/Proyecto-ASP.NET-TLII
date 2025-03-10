@@ -4,6 +4,8 @@
 
     //Se guarda la url anterior por si el usuario viene desde VerTablero(), para ponerselo al link de cancelar.
     var previousUrl = TempData["PreviousUrl"] as string; 
+    //Variable para saber si el usuario es Admin o no.
+    var esAdmin = ViewData["EsAdmin"];
 
 }
 
@@ -12,7 +14,26 @@
 <form asp-controller="Tareas" asp-action="Modificar" class="form" method="post"> <!-- Formulario para modificar tarea. -->
 
     <input type="hidden" asp-for="id" value="@Model.id">
-    <input type="hidden" asp-for="idTablero" value="@Model.idTablero">
+
+    @if(esAdmin!=null && (bool)esAdmin){
+
+        <div class="form-group">        
+
+            <label asp-for="idTablero" class="form-label">Tablero</label>
+            <select asp-for="idTablero" class="form-select" value="@Model.idTablero">
+
+                @foreach (var tablero in @Model.listaDeTableros){
+                    <option value="@tablero.id">@tablero.nombre</option>
+                }
+
+            </select>
+        </div>
+
+    }else{
+
+        <input type="hidden" asp-for="idTablero" value="@Model.idTablero">
+    
+    }
     
     <!-- Se verifica que el usuario sea dueño para poder modificar todas las cosas de la tarea, o en su defecto solo el estado. -->
     @if(@Model.esDueño){ 

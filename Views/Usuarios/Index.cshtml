@@ -42,7 +42,6 @@
 
             <tr>
 
-                <th>Id</th>
                 <th>Usuario</th>
                 <!-- Verificamos que el usuario sea admin, para mostrar o no la columna "Acción". -->
                 @if(EsAdmin!=null && (bool)EsAdmin){  
@@ -60,7 +59,6 @@
 
                 <tr>
 
-                    <td>@usuario.id</td>
                     <td>@usuario.nombreDeUsuario</td>
                     <!-- Verificamos que el usuario sea admin, para mostrar o no las acciones "Modificar" y "Borrar". -->
                     @if(EsAdmin!=null && (bool)EsAdmin){ 

@@ -45,7 +45,6 @@
 
                 <tr>
 
-                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Estado</th>
@@ -63,7 +62,6 @@
 
                     <tr>
 
-                        <td>@tarea.id</td>
                         <td>@tarea.nombre</td>
                         @if(string.IsNullOrEmpty(tarea.descripcion)){
 
@@ -102,6 +100,8 @@
 
         </table>
 
+        <a asp-controller="Tareas" asp-action="AltaTarea" asp-route-id="0" class="btn btn-primary">Crear Tarea</a>
+
     }else{
 
         <h2 class="text-center text-muted">SIN TAREAS</h2>
@@ -121,7 +121,6 @@
 
                 <tr>
 
-                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Estado</th>
@@ -138,7 +137,6 @@
 
                     <tr>
 
-                        <td>@tarea.id</td>
                         <td>@tarea.nombre</td>
                         @if(string.IsNullOrEmpty(tarea.descripcion)){
 

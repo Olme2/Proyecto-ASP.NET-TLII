@@ -58,9 +58,9 @@
             <thead>
 
                 <tr>
-                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
+                    <th>Usuario Propietario</th>
                     <th>Acción</th>
                 </tr>
 
@@ -72,7 +72,6 @@
 
                         <tr>
 
-                            <td>@tablero.id</td>
                             <td>@tablero.nombre</td>
                             @if(string.IsNullOrEmpty(tablero.descripcion)){
  
@@ -83,6 +82,7 @@
                                 <td>@tablero.descripcion</td>
  
                             }
+                            <td>@tablero.nombreUsuarioPropietario</td>
                             <td>
 
                                 <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es admin en este caso, puede acceder a todas las funciones. -->
@@ -124,9 +124,9 @@
 
                 <tr>
 
-                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
+                    <th>Usuario Propietario</th>
                     <th>Acción</th>
 
                 </tr>
@@ -139,7 +139,6 @@
 
                         <tr>
 
-                            <td>@tablero.id</td>
                             <td>@tablero.nombre</td>
                             @if(string.IsNullOrEmpty(tablero.descripcion)){
 
@@ -150,7 +149,7 @@
                                 <td>@tablero.descripcion</td>
 
                             }
-
+                            <td>@tablero.nombreUsuarioPropietario</td>
                             <td>
 
                                 <a asp-action="ModificarTablero" asp-route-id="@tablero.id" class="btn btn-secondary">Modificar</a> <!-- Como el usuario es dueño de estos tableros, tiene acceso a todas las funciones. -->
@@ -189,9 +188,9 @@
 
                 <tr>
 
-                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripcion</th>
+                    <th>Usuario Propietario</th>
                     <th>Acción</th>
 
                 </tr>
@@ -204,7 +203,6 @@
 
                     <tr>
 
-                        <td>@tablero.id</td>
                         <td>@tablero.nombre</td>
                         @if(string.IsNullOrEmpty(tablero.descripcion)){
 
@@ -215,7 +213,7 @@
                             <td>@tablero.descripcion</td>
 
                         }
-
+                        <td>@tablero.nombreUsuarioPropietario</td>
                         <td>
 
                             <a asp-action="VerTablero" asp-route-id="@tablero.id" class="btn btn-info">Ver Tablero</a> <!-- Como el usuario no es dueño del tableros solo los puede ver. -->

@@ -63,18 +63,46 @@ public class TareasController : Controller{
             
             if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
 
+            var esAdmin = HttpContext.Session.GetString("Rol") == "Administrador";
+            ViewData["EsAdmin"] = esAdmin;
+            
+            var tareaVM = new CrearTareaVM();
+
+            if(id==0){
+
+                if(!esAdmin){
+                    TempData["ErrorMessage"] = "Acceso Denegado.";
+                    return RedirectToAction("Index");
+                }
+
+                if(HttpContext.Session.GetString("origen") == "Tablero"){
+                    TempData["ErrorMessage"] = "Acceso Indebido.";
+                    return RedirectToAction("Index", "Tablero");
+                }
+
+                var tableros = repositorioTablero.ListarTableros();
+                if(tableros.Count==0){
+                    TempData["ErrorMessage"] = "No se pueden crear tareas si no existe ningun tablero.";
+                    return RedirectToAction("Index");
+                }
+                var tablerosVM = tableros.Select(t => new ListarTablerosVM(t)).ToList();
+                tareaVM = new CrearTareaVM(id, tablerosVM);
+                return View(tareaVM);
+
+            }
+
             var tablero = repositorioTablero.ObtenerDetallesDeTablero(id);
             var idUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
             var idDueño = tablero.idUsuarioPropietario;
 
             var EsDueño = idUsuario == idDueño;
             //Verificamos que el usuario sea dueño para poder acceder.
-            if(!EsDueño){ 
+            if(!EsDueño && !esAdmin){ 
                 TempData["ErrorMessage"] = "Acceso denegado.";
                 return RedirectToAction("VerTablero", "Tablero", new {id = tablero.id});
             }
 
-            var tareaVM = new CrearTareaVM(id); 
+            tareaVM = new CrearTareaVM(id); 
             return View(tareaVM);
 
         }catch(Exception e){
@@ -96,11 +124,13 @@ public class TareasController : Controller{
             var tarea = new Tareas(tareaVM);
             repositorioTareas.CrearTarea(tarea.idTablero, tarea);
 
+            _logger.LogInformation($"Tarea "+tarea.nombre+" creada correctamente.");
             TempData["SuccessMessage"] = "¡Tarea \""+tareaVM.nombre+"\" creada con éxito!";
             return RedirectToAction("VerTablero", "Tablero", new {id = tarea.idTablero});
 
         }catch(Exception e){
 
+            _logger.LogWarning("Creación de tarea sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Creación de tarea sin éxito.");
         
@@ -114,6 +144,10 @@ public class TareasController : Controller{
 
             if(string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario"))) return RedirectToAction ("Index", "Login");
 
+            //Verificamos si es admin para dar control total a la modificacion sin importar si es o no dueño, si no es admin se verifica que al menos sea dueño o esté asignado para acceder.
+            var esAdmin = HttpContext.Session.GetString("Rol") == "Administrador";
+            ViewData["EsAdmin"] = esAdmin;
+
             var origen = HttpContext.Session.GetString("origen");
             //Guardamos la anterior direccion para redireccionar despues en la vista a la vista anterior correcta si se requiere.
             TempData["PreviousUrl"] = Request.Headers["Referer"].ToString();
@@ -121,9 +155,7 @@ public class TareasController : Controller{
             var tarea = repositorioTareas.ObtenerDetallesDeTarea(id);
             var tareaVM = new ModificarTareaVM(tarea);
             
-            var EsAdmin = HttpContext.Session.GetString("Rol") == "Administrador";
-            //Verificamos si es admin para dar control total a la modificacion sin importar si es o no dueño, si no es admin se verifica que al menos sea dueño o esté asignado para acceder.
-            if(!EsAdmin){ 
+            if(!esAdmin){ 
                 
                 var idUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("Id"));
                 var idUsuarioAsignado = tarea.idUsuarioAsignado;
@@ -143,7 +175,15 @@ public class TareasController : Controller{
                 }
 
                 tareaVM = new ModificarTareaVM(tareaVM, EsDueño);
+            
+            }else{
+
+                var tableros = repositorioTablero.ListarTableros();
+                var tablerosVM = tableros.Select(t => new ListarTablerosVM(t)).ToList();
+                tareaVM = new ModificarTareaVM(tareaVM, tablerosVM);
+                
             }
+
             return View(tareaVM);
         }catch(Exception e){
 
@@ -166,6 +206,7 @@ public class TareasController : Controller{
             var tarea = new Tareas(tareaVM);
             repositorioTareas.ModificarTarea(tarea.id,tarea);
 
+            _logger.LogInformation($"Tarea "+tarea.nombre+" creada correctamente.");
             TempData["SuccessMessage"] = "¡Tarea \""+tareaVM.nombre+"\" modificada con éxito!";
             if(origen == "Tablero"){ //Verificamos de donde viene el usuario con una variable llamada "origen", ya que la tarea se puede modificar desde el index de tareas o desde VerTablero() en el controller de tablero.
                 return RedirectToAction("VerTablero", "Tablero", new {id = tareaVM.idTablero});
@@ -175,6 +216,7 @@ public class TareasController : Controller{
         
         }catch(Exception e){
 
+            _logger.LogWarning("Modificación de tarea sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Modificación de tarea sin éxito.");
 
@@ -242,6 +284,7 @@ public class TareasController : Controller{
             var tarea = new Tareas(model);
             repositorioTareas.AsignarUsuarioATarea(tarea.idUsuarioAsignado, tarea.id);
             
+            _logger.LogInformation($"Tarea "+tarea.nombre+" asignada correctamente.");
             TempData["SuccessMessage"] = "¡Usuario asignado correctamente a la tarea \""+model.nombre+"\"!";
             //Verificamos de donde viene el usuario con una variable llamada "origen", ya que la tarea se puede asignar desde el index de tareas o desde VerTablero() en el controller de tablero.
             if(origen == "Tablero"){ 
@@ -252,6 +295,7 @@ public class TareasController : Controller{
         
         }catch(Exception e){
 
+            _logger.LogWarning("Asignación de usuario sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Asignación de usuario sin éxito.");
 
@@ -315,6 +359,7 @@ public class TareasController : Controller{
             var tarea = new Tareas(tareaVM);
             repositorioTareas.EliminarTarea(tarea.id);
 
+            _logger.LogInformation($"Tarea "+tarea.nombre+" eliminada correctamente.");
             TempData["SuccessMessage"] = "¡Tarea \""+tareaVM.nombre+"\" eliminada con éxito!";
             //Verificamos de donde viene el usuario con una variable llamada "origen", ya que la tarea se puede eliminar desde el index de tareas o desde VerTablero() en el controller de tablero.
             if(origen == "Tablero"){ 
@@ -325,6 +370,7 @@ public class TareasController : Controller{
         
         }catch(Exception e){
 
+            _logger.LogWarning("Eliminación de tarea sin éxito.");
             _logger.LogError(e.ToString());
             return BadRequest("Eliminación de tarea sin éxito.");
         
