@@ -252,7 +252,7 @@ public class UsuariosController : Controller{
 
             _logger.LogWarning("No se cambió correctamente la contraseña.");
             _logger.LogError(e.ToString());
-            return BadRequest("No se cambió correctamente la contraseña.");
+            return BadRequest("No se cambió correctamente la contraseña."); //
 
         }
     }
